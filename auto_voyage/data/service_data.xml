@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Basic Maintenance Services -->
+    <record id="service_oil_change" model="auto.voyage.service">
+        <field name="name">Oil Change Service</field>
+        <field name="code">OIL001</field>
+        <field name="category">maintenance</field>
+        <field name="description">Complete oil change service including oil filter replacement and basic inspection.</field>
+        <field name="duration">1.0</field>
+        <field name="price">49.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">False</field>
+        <field name="required_expertise">basic</field>
+    </record>
+
+    <record id="service_tire_rotation" model="auto.voyage.service">
+        <field name="name">Tire Rotation</field>
+        <field name="code">TIRE001</field>
+        <field name="category">maintenance</field>
+        <field name="description">Standard tire rotation service with pressure check and balance inspection.</field>
+        <field name="duration">0.75</field>
+        <field name="price">29.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">False</field>
+        <field name="required_expertise">basic</field>
+    </record>
+
+    <!-- Inspection Services -->
+    <record id="service_general_inspection" model="auto.voyage.service">
+        <field name="name">General Vehicle Inspection</field>
+        <field name="code">INSP001</field>
+        <field name="category">inspection</field>
+        <field name="description">Comprehensive vehicle inspection including safety checks and diagnostic scanning.</field>
+        <field name="duration">1.5</field>
+        <field name="price">79.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">False</field>
+        <field name="required_expertise">intermediate</field>
+    </record>
+
+    <!-- Repair Services -->
+    <record id="service_brake_service" model="auto.voyage.service">
+        <field name="name">Brake Service</field>
+        <field name="code">BRK001</field>
+        <field name="category">repair</field>
+        <field name="description">Complete brake service including pad replacement and rotor inspection.</field>
+        <field name="duration">2.0</field>
+        <field name="price">199.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">True</field>
+        <field name="required_expertise">advanced</field>
+    </record>
+
+    <!-- Cleaning Services -->
+    <record id="service_full_detailing" model="auto.voyage.service">
+        <field name="name">Full Car Detailing</field>
+        <field name="code">DTL001</field>
+        <field name="category">cleaning</field>
+        <field name="description">Complete interior and exterior detailing service.</field>
+        <field name="duration">4.0</field>
+        <field name="price">149.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">False</field>
+        <field name="required_expertise">intermediate</field>
+    </record>
+
+    <!-- Advanced Services -->
+    <record id="service_engine_diagnostic" model="auto.voyage.service">
+        <field name="name">Engine Diagnostic</field>
+        <field name="code">ENG001</field>
+        <field name="category">repair</field>
+        <field name="description">Complete engine diagnostic with computerized analysis.</field>
+        <field name="duration">2.0</field>
+        <field name="price">129.99</field>
+        <field name="requires_appointment">True</field>
+        <field name="requires_inspection">True</field>
+        <field name="required_expertise">specialist</field>
+    </record>
+</odoo> 

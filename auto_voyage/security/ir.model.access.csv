@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_auto_voyage_vehicle_portal,auto.voyage.vehicle.portal,model_auto_voyage_vehicle,base.group_portal,1,0,0,0
+access_auto_voyage_vehicle_customer,auto.voyage.vehicle.customer,model_auto_voyage_vehicle,auto_voyage.group_auto_voyage_customer,1,1,1,0
+access_auto_voyage_vehicle_manager,auto.voyage.vehicle.manager,model_auto_voyage_vehicle,auto_voyage.group_auto_voyage_manager,1,1,1,1
+access_auto_voyage_service_portal,auto.voyage.service.portal,model_auto_voyage_service,base.group_portal,1,0,0,0
+access_auto_voyage_service_customer,auto.voyage.service.customer,model_auto_voyage_service,auto_voyage.group_auto_voyage_customer,1,0,0,0
+access_auto_voyage_service_manager,auto.voyage.service.manager,model_auto_voyage_service,auto_voyage.group_auto_voyage_manager,1,1,1,1
+access_auto_voyage_service_request_portal,auto.voyage.service.request.portal,model_auto_voyage_service_request,base.group_portal,1,1,1,0
+access_auto_voyage_service_request_customer,auto.voyage.service.request.customer,model_auto_voyage_service_request,auto_voyage.group_auto_voyage_customer,1,1,1,0
+access_auto_voyage_service_request_manager,auto.voyage.service.request.manager,model_auto_voyage_service_request,auto_voyage.group_auto_voyage_manager,1,1,1,1
+access_auto_voyage_service_provider_portal,auto.voyage.service.provider.portal,model_auto_voyage_service_provider,base.group_portal,1,0,0,0
+access_auto_voyage_service_provider_customer,auto.voyage.service.provider.customer,model_auto_voyage_service_provider,auto_voyage.group_auto_voyage_customer,1,0,0,0
+access_auto_voyage_service_provider_manager,auto.voyage.service.provider.manager,model_auto_voyage_service_provider,auto_voyage.group_auto_voyage_manager,1,1,1,1

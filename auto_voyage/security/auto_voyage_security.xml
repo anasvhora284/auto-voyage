@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Auto Voyage Security Category -->
+    <record id="module_category_auto_voyage" model="ir.module.category">
+        <field name="name">Auto Voyage</field>
+        <field name="description">User access level for Auto Voyage module</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- Customer Group -->
+    <record id="group_auto_voyage_customer" model="res.groups">
+        <field name="name">Customer</field>
+        <field name="category_id" ref="module_category_auto_voyage" />
+        <field name="comment">Customer can view services, book services, manage own vehicles, participate in discussions, view/sign contracts, and submit ratings.</field>
+    </record>
+
+    <!-- Service Manager Group -->
+    <record id="group_auto_voyage_manager" model="res.groups">
+        <field name="name">Service Manager</field>
+        <field name="category_id" ref="module_category_auto_voyage" />
+        <field name="implied_ids" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="comment">Service Manager can manage service providers, handle service requests, manage contracts, view reports, handle customer issues, and manage service catalog.</field>
+    </record>
+
+    <!-- Administrator Group -->
+    <record id="group_auto_voyage_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="module_category_auto_voyage" />
+        <field name="implied_ids" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        <field name="comment">Administrator has full system access, including user management, configuration settings, advanced reporting, and system maintenance.</field>
+    </record>
+
+    <!-- Portal Access Rules -->
+    <record id="auto_voyage_vehicle_portal_rule" model="ir.rule">
+        <field name="name">Portal User: Access only own vehicles</field>
+        <field name="model_id" ref="model_auto_voyage_vehicle" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+
+    <!-- Internal User Rules -->
+    <record id="rule_vehicle_user_access" model="ir.rule">
+        <field name="name">Vehicle: Customers see only their vehicles</field>
+        <field name="model_id" ref="model_auto_voyage_vehicle" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+
+    <record id="rule_vehicle_manager_access" model="ir.rule">
+        <field name="name">Vehicle: Managers see all vehicles</field>
+        <field name="model_id" ref="model_auto_voyage_vehicle" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
+</odoo> 

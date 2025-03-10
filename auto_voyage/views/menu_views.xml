@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_auto_voyage_root" name="Auto Voyage" web_icon="auto_voyage,static/description/icon.png" sequence="10" />
+
+    <!-- Operations Menu -->
+    <menuitem id="menu_auto_voyage_operations" name="Operations" parent="menu_auto_voyage_root" sequence="10" />
+
+    <!-- Master Data Menu -->
+    <menuitem id="menu_auto_voyage_master" name="Master Data" parent="menu_auto_voyage_root" sequence="20" />
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_auto_voyage_config" name="Configuration" parent="menu_auto_voyage_root" sequence="100" />
+
+    <!-- Reporting Menu -->
+    <menuitem id="menu_auto_voyage_reporting" name="Reporting" parent="menu_auto_voyage_root" sequence="90" />
+
+</odoo> 
