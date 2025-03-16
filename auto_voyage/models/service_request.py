@@ -22,6 +22,7 @@ class ServiceRequest(models.Model):
     
     # Scheduling
     scheduled_date = fields.Datetime(string='Scheduled Date', required=True, tracking=True)
+    scheduled_end_date = fields.Datetime(string='Scheduled End Date', tracking=True)
     estimated_duration = fields.Float(string='Estimated Duration', related='service_id.duration')
     completion_date = fields.Datetime(string='Completion Date', tracking=True)
     
@@ -50,18 +51,18 @@ class ServiceRequest(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('auto.voyage.service.request') or _('New')
-        return super().create(vals_list)
+        return super(ServiceRequest, self).create(vals_list)
     
     @api.depends('service_id')
     def _compute_amount(self):
-        for request in self:
-            request.amount = request.service_id.price if request.service_id else 0.0
+        for record in self:
+            record.amount = record.service_id.price if record.service_id else 0.0
     
     @api.constrains('scheduled_date')
     def _check_scheduled_date(self):
         for record in self:
             if record.scheduled_date and record.scheduled_date < fields.Datetime.now():
-                raise ValidationError(_("Scheduled date cannot be in the past!"))
+                raise ValidationError(_("Scheduled date cannot be in the past."))
     
     def action_confirm(self):
         self.write({'state': 'confirmed'})

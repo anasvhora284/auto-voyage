@@ -5,15 +5,14 @@
         <field name="name">auto.voyage.service.request.list</field>
         <field name="model">auto.voyage.service.request</field>
         <field name="arch" type="xml">
-            <list string="Service Requests" sample="1" decoration-info="state == 'draft'" decoration-warning="state == 'scheduled'" decoration-success="state == 'completed'" decoration-danger="state == 'cancelled'">
-                <field name="name" />
-                <field name="partner_id" />
-                <field name="vehicle_id" />
+            <list string="Service Requests" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vehicle_id"/>
                 <field name="service_id" />
-                <field name="provider_id" />
-                <field name="scheduled_date" />
-                <field name="amount" sum="Total Amount" />
-                <field name="state" widget="badge" />
+                <field name="provider_id"/>
+                <field name="scheduled_date"/>
+                <field name="state" widget="badge" decoration-info="state in ('draft','confirmed')" decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'"/>
             </list>
         </field>
     </record>
@@ -25,17 +24,17 @@
         <field name="arch" type="xml">
             <form string="Service Request">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" />
-                    <button name="action_schedule" string="Schedule" type="object" class="oe_highlight" />
-                    <button name="action_start" string="Start Service" type="object" class="oe_highlight" />
-                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" />
-                    <button name="action_cancel" string="Cancel" type="object" />
-                    <field name="state" widget="statusbar" />
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_schedule" string="Schedule" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_start" string="Start Service" type="object" class="oe_highlight" invisible="state != 'scheduled'"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft','confirmed','scheduled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,scheduled,in_progress,completed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1" />
+                            <field name="name" readonly="1"/>
                         </h1>
                     </div>
                     <group>
@@ -47,18 +46,17 @@
                         </group>
                         <group>
                             <field name="scheduled_date" />
-                            <field name="estimated_duration" widget="float_time" />
-                            <field name="completion_date" readonly="1" />
+                            <field name="completion_date" readonly="1" invisible="completion_date == False" />
                             <field name="amount" widget="monetary" />
                             <field name="currency_id" invisible="1" />
                         </group>
                     </group>
                     <notebook>
                         <page string="Description" name="description">
-                            <field name="description" placeholder="Service description..." />
+                            <field name="description" placeholder="Describe the service request..." />
                         </page>
                         <page string="Customer Notes" name="customer_notes">
-                            <field name="customer_notes" placeholder="Notes from customer..." />
+                            <field name="customer_notes" placeholder="Notes from the customer..." />
                         </page>
                         <page string="Internal Notes" name="internal_notes" groups="auto_voyage.group_auto_voyage_manager">
                             <field name="internal_notes" placeholder="Internal notes..." />
@@ -67,9 +65,9 @@
                 </sheet>
                 <sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" groups="base.group_user" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" />
+                        <field name="message_ids" widget="mail_thread" />
                     </div>
                 </sheet>
             </form>
@@ -94,13 +92,17 @@
                 <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
                 <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
                 <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]" />
+                <separator />
+                <filter string="Today" name="today" domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]" />
+                <filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]" />
+                <filter string="This Month" name="this_month" domain="[('scheduled_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today().replace(day=1) + relativedelta(months=1)).strftime('%Y-%m-%d'))]" />
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}" />
                     <filter string="Vehicle" name="group_by_vehicle" context="{'group_by': 'vehicle_id'}" />
                     <filter string="Service" name="group_by_service" context="{'group_by': 'service_id'}" />
                     <filter string="Provider" name="group_by_provider" context="{'group_by': 'provider_id'}" />
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
-                    <filter string="Scheduled Date" name="group_by_date" context="{'group_by': 'scheduled_date:day'}" />
+                    <filter string="Scheduled Date" name="group_by_scheduled_date" context="{'group_by': 'scheduled_date:day'}" />
                 </group>
             </search>
         </field>
@@ -111,7 +113,7 @@
         <field name="name">auto.voyage.service.request.calendar</field>
         <field name="model">auto.voyage.service.request</field>
         <field name="arch" type="xml">
-            <calendar string="Service Requests" date_start="scheduled_date" color="provider_id" mode="month">
+            <calendar string="Service Requests" date_start="scheduled_date" color="state" mode="month">
                 <field name="name" />
                 <field name="partner_id" />
                 <field name="service_id" />
@@ -120,52 +122,22 @@
         </field>
     </record>
 
-    <!-- Service Request Action Window -->
+    <!-- Service Request Action -->
     <record id="action_auto_voyage_service_request" model="ir.actions.act_window">
         <field name="name">Service Requests</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">auto.voyage.service.request</field>
         <field name="view_mode">list,form,calendar</field>
-        <field name="search_view_id" ref="view_auto_voyage_service_request_search" />
         <field name="context">{'search_default_draft': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first service request!
             </p>
             <p>
-                Create a service request to schedule vehicle services.
+                Service requests help you track and manage vehicle service operations.
             </p>
         </field>
     </record>
 
-    <!-- Service Request Action for Draft -->
-    <record id="action_auto_voyage_service_request_draft" model="ir.actions.act_window">
-        <field name="name">Draft Requests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">auto.voyage.service.request</field>
-        <field name="view_mode">list,form,calendar</field>
-        <field name="search_view_id" ref="view_auto_voyage_service_request_search" />
-        <field name="context">{'search_default_draft': 1}</field>
-        <field name="domain">[('state', '=', 'draft')]</field>
-    </record>
-
-    <!-- Service Request Action for Scheduled -->
-    <record id="action_auto_voyage_service_request_scheduled" model="ir.actions.act_window">
-        <field name="name">Scheduled Services</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">auto.voyage.service.request</field>
-        <field name="view_mode">list,form,calendar</field>
-        <field name="search_view_id" ref="view_auto_voyage_service_request_search" />
-        <field name="context">{'search_default_scheduled': 1}</field>
-        <field name="domain">[('state', '=', 'scheduled')]</field>
-    </record>
-
-    <!-- Service Request Menu Items -->
-    <menuitem id="menu_auto_voyage_service_request_root" name="Service Requests" parent="menu_auto_voyage_operations" sequence="10" />
-
-    <menuitem id="menu_auto_voyage_service_request_all" name="All Requests" parent="menu_auto_voyage_service_request_root" action="action_auto_voyage_service_request" sequence="10" />
-
-    <menuitem id="menu_auto_voyage_service_request_draft" name="Draft Requests" parent="menu_auto_voyage_service_request_root" action="action_auto_voyage_service_request_draft" sequence="20" />
-
-    <menuitem id="menu_auto_voyage_service_request_scheduled" name="Scheduled Services" parent="menu_auto_voyage_service_request_root" action="action_auto_voyage_service_request_scheduled" sequence="30" />
+    <!-- Service Request Menu -->
+    <menuitem id="menu_auto_voyage_service_request" name="Service Requests" parent="menu_auto_voyage_operations" action="action_auto_voyage_service_request" sequence="20" />
 </odoo> 

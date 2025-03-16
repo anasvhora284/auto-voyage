@@ -51,6 +51,8 @@ class Vehicle(models.Model):
         ('inactive', 'Inactive')
     ], string='Status', default='active', tracking=True)
     
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    
     # Service History
     service_count = fields.Integer(compute='_compute_service_count', string='Services')
     last_service_date = fields.Date(string='Last Service Date', compute='_compute_last_service')

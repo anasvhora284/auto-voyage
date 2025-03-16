@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Contract Report Paper Format -->
+    <record id="paperformat_auto_voyage_contract_report" model="report.paperformat">
+        <field name="name">Auto Voyage Contract Report</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Contract Report Action -->
+    <record id="action_report_auto_voyage_contract" model="ir.actions.report">
+        <field name="name">Contract Report</field>
+        <field name="model">auto.voyage.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">auto_voyage.report_contract</field>
+        <field name="report_file">auto_voyage.report_contract</field>
+        <field name="print_report_name">'Contract - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_auto_voyage_contract"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_auto_voyage_contract_report"/>
+    </record>
+
+    <!-- Contract Report Template -->
+    <template id="report_contract">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <h2 class="text-center">Service Contract</h2>
+
+                        <!-- Contract Information -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Contract Reference:</strong>
+                                <span t-field="doc.name"/>
+                                <br/>
+                                <strong>Customer:</strong>
+                                <span t-field="doc.partner_id.name"/>
+                                <br/>
+                                <strong>Vehicle:</strong>
+                                <span t-field="doc.vehicle_id.name"/>
+                                <br/>
+                                <strong>Service Provider:</strong>
+                                <span t-field="doc.provider_id.name"/>
+                                <br/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Start Date:</strong>
+                                <span t-field="doc.start_date"/>
+                                <br/>
+                                <strong>End Date:</strong>
+                                <span t-field="doc.end_date"/>
+                                <br/>
+                                <strong>Contract Type:</strong>
+                                <span t-field="doc.contract_type"/>
+                                <br/>
+                                <strong>Status:</strong>
+                                <span t-field="doc.state"/>
+                                <br/>
+                            </div>
+                        </div>
+
+                        <!-- Financial Information -->
+                        <h4>Financial Information</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-sm o_main_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Contract Amount</th>
+                                            <th>Currency</th>
+                                            <th>Payment Terms</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span t-field="doc.amount"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="doc.currency_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="doc.payment_terms"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Included Services -->
+                        <h4>Included Services</h4>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.service_request_ids" t-as="service">
+                                    <td>
+                                        <span t-field="service.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="service.category"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="service.description"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Contract Details -->
+                        <h4>Contract Details</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div t-field="doc.description"/>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <h4>Terms and Conditions</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div t-field="doc.terms_conditions"/>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <h4>Notes</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <p t-field="doc.notes"/>
+                            </div>
+                        </div>
+
+                        <!-- Signature Section -->
+                        <div class="row mt64">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <t t-if="doc.customer_signature">
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(doc.customer_signature)" style="max-height: 100px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <p>_______________________</p>
+                                    </t>
+                                    <p>Customer Signature</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <t t-if="doc.provider_signature">
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(doc.provider_signature)" style="max-height: 100px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <p>_______________________</p>
+                                    </t>
+                                    <p>Service Provider Signature</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-12 text-center">
+                                <t t-if="doc.signed_date">
+                                    <p>Signed on: <span t-field="doc.signed_date"/>
+                                    </p>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo> 

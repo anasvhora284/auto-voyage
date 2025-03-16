@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Service Report Paper Format -->
+    <record id="paperformat_auto_voyage_service_report" model="report.paperformat">
+        <field name="name">Auto Voyage Service Report</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Service Report Action -->
+    <record id="action_report_auto_voyage_service" model="ir.actions.report">
+        <field name="name">Service Report</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">auto_voyage.report_service_request</field>
+        <field name="report_file">auto_voyage.report_service_request</field>
+        <field name="print_report_name">'Service Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_auto_voyage_service_request"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_auto_voyage_service_report"/>
+    </record>
+
+    <!-- Service Report Template -->
+    <template id="report_service_request">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <h2 class="text-center">Service Request Report</h2>
+
+                        <!-- Service Request Information -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Request Reference:</strong>
+                                <span t-field="doc.name"/>
+                                <br/>
+                                <strong>Customer:</strong>
+                                <span t-field="doc.partner_id.name"/>
+                                <br/>
+                                <strong>Vehicle:</strong>
+                                <span t-field="doc.vehicle_id.name"/>
+                                <br/>
+                                <strong>Service:</strong>
+                                <span t-field="doc.service_id.name"/>
+                                <br/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Request Date:</strong>
+                                <span t-field="doc.scheduled_date"/>
+                                <br/>
+                                <strong>Scheduled Date:</strong>
+                                <span t-field="doc.scheduled_date"/>
+                                <br/>
+                                <strong>Service Provider:</strong>
+                                <span t-field="doc.provider_id.name"/>
+                                <br/>
+                                <strong>Status:</strong>
+                                <span t-field="doc.state"/>
+                                <br/>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Information -->
+                        <h4>Vehicle Information</h4>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Make</th>
+                                    <th>Model</th>
+                                    <th>Year</th>
+                                    <th>License Plate</th>
+                                    <th>VIN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.vehicle_id.make"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.vehicle_id.model"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.vehicle_id.year"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.vehicle_id.license_plate"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.vehicle_id.vin"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Service Details -->
+                        <h4>Service Details</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <p>
+                                    <strong>Description:</strong>
+                                    <span t-field="doc.description"/>
+                                </p>
+                                <p>
+                                    <strong>Notes:</strong>
+                                    <span t-field="doc.notes"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Service Provider Information -->
+                        <t t-if="doc.provider_id">
+                            <h4>Service Provider Information</h4>
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span t-field="doc.provider_id.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.provider_id.phone"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.provider_id.email"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.provider_id.rating"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Signature Section -->
+                        <div class="row mt64">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <p>_______________________</p>
+                                    <p>Customer Signature</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <p>_______________________</p>
+                                    <p>Service Provider Signature</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo> 

@@ -1,30 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-<!--
-          <record id="object0" model="auto_voyage.auto_voyage">
-            <field name="name">Object 0</field>
-            <field name="value">0</field>
-          </record>
+  <data>
+    <!-- Demo Vehicles -->
+    <record id="demo_vehicle_1" model="auto.voyage.vehicle">
+      <field name="name">Toyota Camry</field>
+      <field name="model">Camry</field>
+      <field name="make">Toyota</field>
+      <field name="year">2020</field>
+      <field name="license_plate">ABC-1234</field>
+      <field name="vin">1HGCM82633A123456</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="color">Silver</field>
+      <field name="fuel_type">petrol</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">25000</field>
+      <field name="active" eval="True"/>
+    </record>
 
-          <record id="object1" model="auto_voyage.auto_voyage">
-            <field name="name">Object 1</field>
-            <field name="value">10</field>
-          </record>
+    <record id="demo_vehicle_2" model="auto.voyage.vehicle">
+      <field name="name">Honda Civic</field>
+      <field name="model">Civic</field>
+      <field name="make">Honda</field>
+      <field name="year">2019</field>
+      <field name="license_plate">XYZ-5678</field>
+      <field name="vin">2HGFC2F52KH123456</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="color">Blue</field>
+      <field name="fuel_type">petrol</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">35000</field>
+      <field name="active" eval="True"/>
+    </record>
 
-          <record id="object2" model="auto_voyage.auto_voyage">
-            <field name="name">Object 2</field>
-            <field name="value">20</field>
-          </record>
+    <!-- Demo Service Providers -->
+    <record id="demo_provider_1" model="auto.voyage.service.provider">
+      <field name="partner_id" ref="base.res_partner_12"/>
+      <field name="code">QFAS001</field>
+      <field name="expertise_level">advanced</field>
+      <field name="work_schedule">full_time</field>
+      <field name="available" eval="True"/>
+      <field name="active" eval="True"/>
+    </record>
 
-          <record id="object3" model="auto_voyage.auto_voyage">
-            <field name="name">Object 3</field>
-            <field name="value">30</field>
-          </record>
+    <record id="demo_provider_2" model="auto.voyage.service.provider">
+      <field name="partner_id" ref="base.res_partner_2"/>
+      <field name="code">PCC001</field>
+      <field name="expertise_level">specialist</field>
+      <field name="work_schedule">full_time</field>
+      <field name="available" eval="True"/>
+      <field name="active" eval="True"/>
+    </record>
 
-          <record id="object4" model="auto_voyage.auto_voyage">
-            <field name="name">Object 4</field>
-            <field name="value">40</field>
-          </record>
--->
-    </data>
+    <!-- Demo Service Requests -->
+    <record id="demo_service_request_1" model="auto.voyage.service.request">
+      <field name="name">SR/2023/001</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="vehicle_id" ref="auto_voyage.demo_vehicle_1"/>
+      <field name="service_id" ref="auto_voyage.service_oil_change"/>
+      <field name="provider_id" ref="auto_voyage.demo_provider_1"/>
+      <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=5, hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="state">draft</field>
+      <field name="description">Regular oil change service</field>
+      <field name="amount">45.00</field>
+    </record>
+
+    <record id="demo_service_request_2" model="auto.voyage.service.request">
+      <field name="name">SR/2023/002</field>
+      <field name="partner_id" ref="base.partner_admin"/>
+      <field name="vehicle_id" ref="auto_voyage.demo_vehicle_2"/>
+      <field name="service_id" ref="auto_voyage.service_brake_service"/>
+      <field name="provider_id" ref="auto_voyage.demo_provider_2"/>
+      <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=7, hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="state">draft</field>
+      <field name="description">Brake pad replacement and system check</field>
+      <field name="amount">120.00</field>
+    </record>
+
+    <!-- Demo Contracts -->
+    <record id="demo_contract_1" model="auto.voyage.contract">
+      <field name="name">Annual Maintenance Plan</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="vehicle_id" ref="demo_vehicle_1"/>
+      <field name="provider_id" ref="demo_provider_1"/>
+      <field name="start_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+      <field name="end_date" eval="(DateTime.today() + relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+      <field name="amount">1200.00</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="state">draft</field>
+    </record>
+
+    <!-- Demo Ratings -->
+    <record id="demo_rating_1" model="auto.voyage.rating">
+      <field name="name">RTG/2023/001</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="provider_id" ref="demo_provider_1"/>
+      <field name="service_id" ref="demo_service_request_1"/>
+      <field name="rating_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+      <field name="service_quality">4</field>
+      <field name="timeliness">4</field>
+      <field name="communication">4</field>
+      <field name="value_for_money">4</field>
+      <field name="feedback">Good service, but took longer than expected</field>
+      <field name="state">draft</field>
+    </record>
+
+    <record id="demo_rating_2" model="auto.voyage.rating">
+      <field name="name">RTG/2023/002</field>
+      <field name="partner_id" ref="base.partner_admin"/>
+      <field name="provider_id" ref="demo_provider_2"/>
+      <field name="service_id" ref="demo_service_request_2"/>
+      <field name="rating_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+      <field name="service_quality">5</field>
+      <field name="timeliness">5</field>
+      <field name="communication">5</field>
+      <field name="value_for_money">5</field>
+      <field name="feedback">Excellent service and very professional</field>
+      <field name="state">draft</field>
+    </record>
+
+    <!-- Demo Discussions -->
+    <record id="demo_discussion_1" model="auto.voyage.discussion">
+      <field name="name">Question about oil change frequency</field>
+      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="service_id" ref="demo_service_request_1"/>
+      <field name="category">technical</field>
+      <field name="priority">2</field>
+      <field name="description">How often should I change the oil in my Toyota Camry?</field>
+      <field name="state">new</field>
+    </record>
+  </data>
 </odoo>

@@ -8,4 +8,22 @@
         <field name="padding">5</field>
         <field name="company_id" eval="False" />
     </record>
+
+    <!-- Add this inside the existing file -->
+    <record id="seq_auto_voyage_contract" model="ir.sequence">
+        <field name="name">Auto Voyage Contract</field>
+        <field name="code">auto.voyage.contract</field>
+        <field name="prefix">CONT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Add this inside the existing file -->
+    <record id="seq_auto_voyage_rating" model="ir.sequence">
+        <field name="name">Auto Voyage Rating</field>
+        <field name="code">auto.voyage.rating</field>
+        <field name="prefix">RTG/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>     

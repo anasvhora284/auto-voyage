@@ -31,6 +31,9 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
         'portal',
         'product',
         'calendar',
+        'web',
+        'account',
+        'account_payment',
     ],
 
     # always loaded
@@ -49,6 +52,17 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
         'views/service_views.xml',
         'views/service_provider_views.xml',
         'views/service_request_views.xml',
+        'views/contract_views.xml',
+        'views/discussion_views.xml',
+        'views/rating_views.xml',
+        'views/dashboard_views.xml',
+        
+        # Wizards
+        'wizard/assign_service_views.xml',
+        
+        # Reports
+        'report/service_report.xml',
+        'report/contract_report.xml',
     ],
 
     'demo': [

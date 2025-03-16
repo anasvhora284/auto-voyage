@@ -109,13 +109,13 @@
                                 </strong>
                                 <div class="o_kanban_record_subtitle">
                                     <field name="code" />
- -                                    <field name="category" />
+                                    <field name="category" />
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
                                         <span>
                                             <field name="duration" />
- Hours</span>
+Hours </span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <strong>

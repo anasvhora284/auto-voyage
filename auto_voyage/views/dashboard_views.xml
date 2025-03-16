@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Action -->
+    <record id="action_auto_voyage_dashboard" model="ir.actions.act_window">
+        <field name="name">Auto Voyage Dashboard</field>
+        <field name="res_model">auto.voyage.service.request</field>
+        <field name="view_mode">kanban,graph,pivot,list,form</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No service requests yet!
+            </p>
+            <p>
+                Create your first service request to see the dashboard.
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_auto_voyage_dashboard" name="Dashboard" parent="menu_auto_voyage_root" action="action_auto_voyage_dashboard" sequence="5"/>
+
+    <!-- Service Analytics Action -->
+    <record id="action_auto_voyage_service_analytics" model="ir.actions.act_window">
+        <field name="name">Service Analytics</field>
+        <field name="res_model">auto.voyage.service.request</field>
+        <field name="view_mode">kanban,graph,pivot,list</field>
+        <field name="context">{'group_by': ['state', 'service_id']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No service requests yet!
+            </p>
+            <p>
+                Create your first service request to see analytics.
+            </p>
+        </field>
+    </record>
+
+    <!-- Service Analytics Menu -->
+    <menuitem id="menu_auto_voyage_service_analytics" name="Service Analytics" parent="menu_auto_voyage_reporting" action="action_auto_voyage_service_analytics" sequence="10"/>
+
+    <!-- Provider Performance Action -->
+    <record id="action_auto_voyage_provider_performance" model="ir.actions.act_window">
+        <field name="name">Provider Performance</field>
+        <field name="res_model">auto.voyage.service.provider</field>
+        <field name="view_mode">kanban,graph,pivot,list</field>
+        <field name="context">{'search_default_group_by_rating': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No service providers yet!
+            </p>
+            <p>
+                Create your first service provider to see performance metrics.
+            </p>
+        </field>
+    </record>
+
+    <!-- Provider Performance Menu -->
+    <menuitem id="menu_auto_voyage_provider_performance" name="Provider Performance" parent="menu_auto_voyage_reporting" action="action_auto_voyage_provider_performance" sequence="20"/>
+
+    <!-- Customer Satisfaction Action -->
+    <record id="action_auto_voyage_customer_satisfaction" model="ir.actions.act_window">
+        <field name="name">Customer Satisfaction</field>
+        <field name="res_model">auto.voyage.rating</field>
+        <field name="view_mode">kanban,graph,pivot,list</field>
+        <field name="context">{'group_by': ['service_quality', 'service_id']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No ratings yet!
+            </p>
+            <p>
+                Customers will submit ratings after service completion.
+            </p>
+        </field>
+    </record>
+
+    <!-- Customer Satisfaction Menu -->
+    <menuitem id="menu_auto_voyage_customer_satisfaction" name="Customer Satisfaction" parent="menu_auto_voyage_reporting" action="action_auto_voyage_customer_satisfaction" sequence="30"/>
+
+    <!-- Revenue Tracking Action -->
+    <record id="action_auto_voyage_revenue_tracking" model="ir.actions.act_window">
+        <field name="name">Revenue Tracking</field>
+        <field name="res_model">auto.voyage.contract</field>
+        <field name="view_mode">kanban,graph,pivot,list</field>
+        <field name="context">{'group_by': ['state', 'contract_type']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No contracts yet!
+            </p>
+            <p>
+                Create your first contract to see revenue metrics.
+            </p>
+        </field>
+    </record>
+
+    <!-- Revenue Tracking Menu -->
+    <menuitem id="menu_auto_voyage_revenue_tracking" name="Revenue Tracking" parent="menu_auto_voyage_reporting" action="action_auto_voyage_revenue_tracking" sequence="40"/>
+
+    <!-- Graph View for Service Requests -->
+    <record id="view_auto_voyage_service_request_graph" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.graph</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <graph string="Service Requests Analysis" sample="1">
+                <field name="service_id"/>
+                <field name="state"/>
+                <field name="scheduled_date" interval="month"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View for Service Requests -->
+    <record id="view_auto_voyage_service_request_pivot" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.pivot</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Requests Analysis" sample="1">
+                <field name="service_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="scheduled_date" interval="month" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph View for Ratings -->
+    <record id="view_auto_voyage_rating_graph" model="ir.ui.view">
+        <field name="name">auto.voyage.rating.graph</field>
+        <field name="model">auto.voyage.rating</field>
+        <field name="arch" type="xml">
+            <graph string="Customer Satisfaction Analysis" sample="1">
+                <field name="service_id"/>
+                <field name="overall_rating" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View for Ratings -->
+    <record id="view_auto_voyage_rating_pivot" model="ir.ui.view">
+        <field name="name">auto.voyage.rating.pivot</field>
+        <field name="model">auto.voyage.rating</field>
+        <field name="arch" type="xml">
+            <pivot string="Customer Satisfaction Analysis" sample="1">
+                <field name="service_id" type="row"/>
+                <field name="overall_rating" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph View for Contracts -->
+    <record id="view_auto_voyage_contract_graph" model="ir.ui.view">
+        <field name="name">auto.voyage.contract.graph</field>
+        <field name="model">auto.voyage.contract</field>
+        <field name="arch" type="xml">
+            <graph string="Revenue Analysis" sample="1">
+                <field name="contract_type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View for Contracts -->
+    <record id="view_auto_voyage_contract_pivot" model="ir.ui.view">
+        <field name="name">auto.voyage.contract.pivot</field>
+        <field name="model">auto.voyage.contract</field>
+        <field name="arch" type="xml">
+            <pivot string="Revenue Analysis" sample="1">
+                <field name="contract_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+</odoo> 

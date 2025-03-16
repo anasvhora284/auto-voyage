@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Assign Service Wizard Form View -->
+    <record id="view_auto_voyage_assign_service_wizard_form" model="ir.ui.view">
+        <field name="name">auto.voyage.assign.service.wizard.form</field>
+        <field name="model">auto.voyage.assign.service.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Service Provider">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="service_request_id" readonly="context.get('active_id', False) != False"/>
+                            <field name="service_id" readonly="1"/>
+                            <field name="provider_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_assign" string="Assign" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Assign Service Wizard Action -->
+    <record id="action_auto_voyage_assign_service_wizard" model="ir.actions.act_window">
+        <field name="name">Assign Service Provider</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">auto.voyage.assign.service.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_auto_voyage_service_request"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo> 
