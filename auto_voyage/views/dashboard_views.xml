@@ -36,11 +36,11 @@
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong>
+                                    <div class="o_primary d-flex justify-content-between align-items-center">
+                                        <strong class="o_kanban_record_title">
                                             <field name="name"/>
                                         </strong>
-                                        <span t-attf-class="float-right badge #{record.state.raw_value == 'draft' ? 'bg-info' : record.state.raw_value == 'confirmed' ? 'bg-primary' : record.state.raw_value == 'scheduled' ? 'bg-warning' : record.state.raw_value == 'in_progress' ? 'bg-success' : record.state.raw_value == 'completed' ? 'bg-success' : 'bg-danger'}">
+                                        <span t-attf-class="me-5 badge #{record.state.raw_value == 'draft' ? 'bg-info' : record.state.raw_value == 'confirmed' ? 'bg-primary' : record.state.raw_value == 'scheduled' ? 'bg-warning' : record.state.raw_value == 'in_progress' ? 'bg-success' : record.state.raw_value == 'completed' ? 'bg-success' : 'bg-danger'}">
                                             <field name="state"/>
                                         </span>
                                     </div>
