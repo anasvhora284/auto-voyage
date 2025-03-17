@@ -1,7 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+    <!-- Demo Partners -->
+    <record id="demo_partner_1" model="res.partner">
+      <field name="name">John Smith</field>
+      <field name="email">john.smith@example.com</field>
+      <field name="phone">+1 555-123-4567</field>
+    </record>
+
+    <record id="demo_partner_2" model="res.partner">
+      <field name="name">Sarah Johnson</field>
+      <field name="email">sarah.johnson@example.com</field>
+      <field name="phone">+1 555-234-5678</field>
+    </record>
+
+    <record id="demo_partner_3" model="res.partner">
+      <field name="name">Michael Brown</field>
+      <field name="email">michael.brown@example.com</field>
+      <field name="phone">+1 555-345-6789</field>
+    </record>
+
+    <record id="demo_partner_4" model="res.partner">
+      <field name="name">Emily Davis</field>
+      <field name="email">emily.davis@example.com</field>
+      <field name="phone">+1 555-456-7890</field>
+    </record>
+
+    <record id="demo_provider_partner_1" model="res.partner">
+      <field name="name">QuickFix Auto Service</field>
+      <field name="email">quickfix@example.com</field>
+      <field name="phone">+1 555-567-8901</field>
+      <field name="is_company">True</field>
+    </record>
+
+    <record id="demo_provider_partner_2" model="res.partner">
+      <field name="name">Premium Car Care</field>
+      <field name="email">premiumcare@example.com</field>
+      <field name="phone">+1 555-678-9012</field>
+      <field name="is_company">True</field>
+    </record>
+
+    <record id="demo_provider_partner_3" model="res.partner">
+      <field name="name">Elite Auto Services</field>
+      <field name="email">eliteauto@example.com</field>
+      <field name="phone">+1 555-789-0123</field>
+      <field name="is_company">True</field>
+    </record>
+
+    <!-- Demo Users -->
+    <!-- Normal Users -->
+    <record id="demo_user_1" model="res.users">
+      <field name="login">john.smith@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">John Smith</field>
+      <field name="partner_id" ref="demo_partner_1"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_customer')])]"/>
+    </record>
+
+    <record id="demo_user_2" model="res.users">
+      <field name="login">sarah.johnson@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">Sarah Johnson</field>
+      <field name="partner_id" ref="demo_partner_2"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_customer')])]"/>
+    </record>
+
+    <record id="demo_user_3" model="res.users">
+      <field name="login">michael.brown@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">Michael Brown</field>
+      <field name="partner_id" ref="demo_partner_3"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_customer')])]"/>
+    </record>
+
+    <record id="demo_user_4" model="res.users">
+      <field name="login">emily.davis@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">Emily Davis</field>
+      <field name="partner_id" ref="demo_partner_4"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_customer')])]"/>
+    </record>
+
+    <!-- Service Provider Users -->
+    <record id="demo_provider_user_1" model="res.users">
+      <field name="login">quickfix@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">QuickFix Auto Service</field>
+      <field name="partner_id" ref="demo_provider_partner_1"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_manager')])]"/>
+    </record>
+
+    <record id="demo_provider_user_2" model="res.users">
+      <field name="login">premiumcare@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">Premium Car Care</field>
+      <field name="partner_id" ref="demo_provider_partner_2"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_manager')])]"/>
+    </record>
+
+    <record id="demo_provider_user_3" model="res.users">
+      <field name="login">eliteauto@example.com</field>
+      <field name="password">demo123</field>
+      <field name="name">Elite Auto Services</field>
+      <field name="partner_id" ref="demo_provider_partner_3"/>
+      <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('auto_voyage.group_auto_voyage_manager')])]"/>
+    </record>
+
     <!-- Demo Vehicles -->
+    <!-- John Smith's Vehicles -->
     <record id="demo_vehicle_1" model="auto.voyage.vehicle">
       <field name="name">Toyota Camry</field>
       <field name="model">Camry</field>
@@ -9,12 +115,13 @@
       <field name="year">2020</field>
       <field name="license_plate">ABC-1234</field>
       <field name="vin">1HGCM82633A123456</field>
-      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="partner_id" ref="demo_partner_1"/>
       <field name="color">Silver</field>
       <field name="fuel_type">petrol</field>
       <field name="transmission">automatic</field>
       <field name="mileage">25000</field>
       <field name="active" eval="True"/>
+      <field name="state">active</field>
     </record>
 
     <record id="demo_vehicle_2" model="auto.voyage.vehicle">
@@ -24,111 +131,243 @@
       <field name="year">2019</field>
       <field name="license_plate">XYZ-5678</field>
       <field name="vin">2HGFC2F52KH123456</field>
-      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="partner_id" ref="demo_partner_1"/>
       <field name="color">Blue</field>
       <field name="fuel_type">petrol</field>
       <field name="transmission">automatic</field>
       <field name="mileage">35000</field>
       <field name="active" eval="True"/>
+      <field name="state">active</field>
+    </record>
+
+    <!-- Sarah Johnson's Vehicles -->
+    <record id="demo_vehicle_3" model="auto.voyage.vehicle">
+      <field name="name">BMW 3 Series</field>
+      <field name="model">3 Series</field>
+      <field name="make">BMW</field>
+      <field name="year">2022</field>
+      <field name="license_plate">BMW-2022</field>
+      <field name="vin">WBA3B3C50EF234567</field>
+      <field name="partner_id" ref="demo_partner_2"/>
+      <field name="color">Black</field>
+      <field name="fuel_type">petrol</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">10000</field>
+      <field name="active" eval="True"/>
+      <field name="state">active</field>
+    </record>
+
+    <record id="demo_vehicle_4" model="auto.voyage.vehicle">
+      <field name="name">Mercedes-Benz C-Class</field>
+      <field name="model">C-Class</field>
+      <field name="make">Mercedes-Benz</field>
+      <field name="year">2021</field>
+      <field name="license_plate">MER-2021</field>
+      <field name="vin">WDDWF4FB8FR345678</field>
+      <field name="partner_id" ref="demo_partner_2"/>
+      <field name="color">White</field>
+      <field name="fuel_type">diesel</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">20000</field>
+      <field name="active" eval="True"/>
+      <field name="state">in_service</field>
+    </record>
+
+    <!-- Michael Brown's Vehicles -->
+    <record id="demo_vehicle_5" model="auto.voyage.vehicle">
+      <field name="name">Tesla Model 3</field>
+      <field name="model">Model 3</field>
+      <field name="make">Tesla</field>
+      <field name="year">2023</field>
+      <field name="license_plate">TSL-2023</field>
+      <field name="vin">5YJ3E1EA1PF456789</field>
+      <field name="partner_id" ref="demo_partner_3"/>
+      <field name="color">Red</field>
+      <field name="fuel_type">electric</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">5000</field>
+      <field name="active" eval="True"/>
+      <field name="state">active</field>
+    </record>
+
+    <record id="demo_vehicle_6" model="auto.voyage.vehicle">
+      <field name="name">Audi Q5</field>
+      <field name="model">Q5</field>
+      <field name="make">Audi</field>
+      <field name="year">2022</field>
+      <field name="license_plate">AUD-2022</field>
+      <field name="vin">WAUZZZFY8N2567890</field>
+      <field name="partner_id" ref="demo_partner_3"/>
+      <field name="color">Gray</field>
+      <field name="fuel_type">petrol</field>
+      <field name="transmission">automatic</field>
+      <field name="mileage">18000</field>
+      <field name="active" eval="True"/>
+      <field name="state">active</field>
+    </record>
+
+    <!-- Emily Davis's Vehicles -->
+    <record id="demo_vehicle_7" model="auto.voyage.vehicle">
+      <field name="name">Volkswagen Golf</field>
+      <field name="model">Golf</field>
+      <field name="make">Volkswagen</field>
+      <field name="year">2021</field>
+      <field name="license_plate">VW-2021</field>
+      <field name="vin">WVWZZZ1KZMP678901</field>
+      <field name="partner_id" ref="demo_partner_4"/>
+      <field name="color">Blue</field>
+      <field name="fuel_type">petrol</field>
+      <field name="transmission">manual</field>
+      <field name="mileage">30000</field>
+      <field name="active" eval="True"/>
+      <field name="state">active</field>
     </record>
 
     <!-- Demo Service Providers -->
     <record id="demo_provider_1" model="auto.voyage.service.provider">
-      <field name="partner_id" ref="base.res_partner_12"/>
+      <field name="partner_id" ref="demo_provider_partner_1"/>
       <field name="code">QFAS001</field>
       <field name="expertise_level">advanced</field>
       <field name="work_schedule">full_time</field>
       <field name="available" eval="True"/>
       <field name="active" eval="True"/>
+      <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_oil_change'), ref('auto_voyage.service_tire_rotation'), ref('auto_voyage.service_brake_service')])]"/>
     </record>
 
     <record id="demo_provider_2" model="auto.voyage.service.provider">
-      <field name="partner_id" ref="base.res_partner_2"/>
+      <field name="partner_id" ref="demo_provider_partner_2"/>
       <field name="code">PCC001</field>
       <field name="expertise_level">specialist</field>
       <field name="work_schedule">full_time</field>
       <field name="available" eval="True"/>
       <field name="active" eval="True"/>
+      <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_engine_diagnostic'), ref('auto_voyage.service_general_inspection')])]"/>
+    </record>
+
+    <record id="demo_provider_3" model="auto.voyage.service.provider">
+      <field name="partner_id" ref="demo_provider_partner_3"/>
+      <field name="code">EAS001</field>
+      <field name="expertise_level">specialist</field>
+      <field name="work_schedule">part_time</field>
+      <field name="available" eval="True"/>
+      <field name="active" eval="True"/>
+      <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_full_detailing'), ref('auto_voyage.service_general_inspection')])]"/>
     </record>
 
     <!-- Demo Service Requests -->
+    <!-- Active Service Requests -->
     <record id="demo_service_request_1" model="auto.voyage.service.request">
       <field name="name">SR/2023/001</field>
-      <field name="partner_id" ref="base.partner_demo"/>
-      <field name="vehicle_id" ref="auto_voyage.demo_vehicle_1"/>
+      <field name="partner_id" ref="demo_partner_1"/>
+      <field name="vehicle_id" ref="demo_vehicle_1"/>
       <field name="service_id" ref="auto_voyage.service_oil_change"/>
-      <field name="provider_id" ref="auto_voyage.demo_provider_1"/>
+      <field name="provider_id" ref="demo_provider_1"/>
       <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
       <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=5, hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
-      <field name="state">draft</field>
+      <field name="state">scheduled</field>
       <field name="description">Regular oil change service</field>
-      <field name="amount">45.00</field>
     </record>
 
     <record id="demo_service_request_2" model="auto.voyage.service.request">
       <field name="name">SR/2023/002</field>
-      <field name="partner_id" ref="base.partner_admin"/>
-      <field name="vehicle_id" ref="auto_voyage.demo_vehicle_2"/>
+      <field name="partner_id" ref="demo_partner_2"/>
+      <field name="vehicle_id" ref="demo_vehicle_3"/>
       <field name="service_id" ref="auto_voyage.service_brake_service"/>
-      <field name="provider_id" ref="auto_voyage.demo_provider_2"/>
+      <field name="provider_id" ref="demo_provider_1"/>
       <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')"/>
-      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=7, hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
-      <field name="state">draft</field>
+      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=7, hours=3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="state">confirmed</field>
       <field name="description">Brake pad replacement and system check</field>
-      <field name="amount">120.00</field>
+    </record>
+
+    <!-- In Progress Service Requests -->
+    <record id="demo_service_request_3" model="auto.voyage.service.request">
+      <field name="name">SR/2023/003</field>
+      <field name="partner_id" ref="demo_partner_3"/>
+      <field name="vehicle_id" ref="demo_vehicle_5"/>
+      <field name="service_id" ref="auto_voyage.service_engine_diagnostic"/>
+      <field name="provider_id" ref="demo_provider_2"/>
+      <field name="scheduled_date" eval="(DateTime.today() + relativedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="state">in_progress</field>
+      <field name="description">Complete diagnostic check for battery and motor systems</field>
+    </record>
+
+    <!-- Completed Service Requests -->
+    <record id="demo_service_request_4" model="auto.voyage.service.request">
+      <field name="name">SR/2023/004</field>
+      <field name="partner_id" ref="demo_partner_4"/>
+      <field name="vehicle_id" ref="demo_vehicle_7"/>
+      <field name="service_id" ref="auto_voyage.service_full_detailing"/>
+      <field name="provider_id" ref="demo_provider_3"/>
+      <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="scheduled_end_date" eval="(DateTime.today() + relativedelta(days=1, hours=4)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="completion_date" eval="(DateTime.today() + relativedelta(days=1, hours=4)).strftime('%Y-%m-%d %H:%M:%S')"/>
+      <field name="state">completed</field>
+      <field name="description">Full interior and exterior detailing service</field>
     </record>
 
     <!-- Demo Contracts -->
     <record id="demo_contract_1" model="auto.voyage.contract">
-      <field name="name">Annual Maintenance Plan</field>
-      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="name">Annual Maintenance Plan - Premium</field>
+      <field name="partner_id" ref="demo_partner_1"/>
       <field name="vehicle_id" ref="demo_vehicle_1"/>
       <field name="provider_id" ref="demo_provider_1"/>
       <field name="start_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
       <field name="end_date" eval="(DateTime.today() + relativedelta(years=1)).strftime('%Y-%m-%d')"/>
-      <field name="amount">1200.00</field>
-      <field name="currency_id" ref="base.USD"/>
+      <field name="contract_type">premium</field>
+      <field name="amount">1500.00</field>
+      <field name="state">active</field>
+      <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_oil_change'), ref('auto_voyage.service_tire_rotation'), ref('auto_voyage.service_general_inspection')])]"/>
+    </record>
+
+    <record id="demo_contract_2" model="auto.voyage.contract">
+      <field name="name">Basic Service Package</field>
+      <field name="partner_id" ref="demo_partner_2"/>
+      <field name="vehicle_id" ref="demo_vehicle_3"/>
+      <field name="provider_id" ref="demo_provider_2"/>
+      <field name="start_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+      <field name="end_date" eval="(DateTime.today() + relativedelta(months=6)).strftime('%Y-%m-%d')"/>
+      <field name="contract_type">basic</field>
+      <field name="amount">800.00</field>
       <field name="state">draft</field>
+      <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_oil_change'), ref('auto_voyage.service_general_inspection')])]"/>
     </record>
 
     <!-- Demo Ratings -->
     <record id="demo_rating_1" model="auto.voyage.rating">
       <field name="name">RTG/2023/001</field>
-      <field name="partner_id" ref="base.partner_demo"/>
-      <field name="provider_id" ref="demo_provider_1"/>
-      <field name="service_id" ref="demo_service_request_1"/>
-      <field name="rating_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
-      <field name="service_quality">4</field>
-      <field name="timeliness">4</field>
-      <field name="communication">4</field>
-      <field name="value_for_money">4</field>
-      <field name="feedback">Good service, but took longer than expected</field>
-      <field name="state">draft</field>
-    </record>
-
-    <record id="demo_rating_2" model="auto.voyage.rating">
-      <field name="name">RTG/2023/002</field>
-      <field name="partner_id" ref="base.partner_admin"/>
-      <field name="provider_id" ref="demo_provider_2"/>
-      <field name="service_id" ref="demo_service_request_2"/>
+      <field name="partner_id" ref="demo_partner_4"/>
+      <field name="provider_id" ref="demo_provider_3"/>
+      <field name="service_id" ref="demo_service_request_4"/>
       <field name="rating_date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
       <field name="service_quality">5</field>
       <field name="timeliness">5</field>
       <field name="communication">5</field>
-      <field name="value_for_money">5</field>
-      <field name="feedback">Excellent service and very professional</field>
-      <field name="state">draft</field>
+      <field name="value_for_money">4</field>
+      <field name="feedback">Excellent detailing service, car looks brand new!</field>
+      <field name="state">published</field>
     </record>
 
     <!-- Demo Discussions -->
     <record id="demo_discussion_1" model="auto.voyage.discussion">
-      <field name="name">Question about oil change frequency</field>
-      <field name="partner_id" ref="base.partner_demo"/>
+      <field name="name">Service Schedule Query</field>
+      <field name="partner_id" ref="demo_partner_1"/>
       <field name="service_id" ref="demo_service_request_1"/>
-      <field name="category">technical</field>
+      <field name="category">scheduling</field>
       <field name="priority">2</field>
-      <field name="description">How often should I change the oil in my Toyota Camry?</field>
+      <field name="description">Need to discuss the possibility of rescheduling the service to next week.</field>
       <field name="state">new</field>
+    </record>
+
+    <record id="demo_discussion_2" model="auto.voyage.discussion">
+      <field name="name">Technical Consultation</field>
+      <field name="partner_id" ref="demo_partner_3"/>
+      <field name="service_id" ref="demo_service_request_3"/>
+      <field name="category">technical</field>
+      <field name="priority">3</field>
+      <field name="description">Discussion about the diagnostic results and recommended actions for the Tesla.</field>
+      <field name="state">in_progress</field>
     </record>
   </data>
 </odoo>

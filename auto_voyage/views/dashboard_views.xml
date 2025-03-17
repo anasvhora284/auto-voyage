@@ -16,6 +16,93 @@
         </field>
     </record>
 
+    <!-- Service Request Kanban View -->
+    <record id="view_auto_voyage_service_request_kanban" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.kanban</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_dashboard" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vehicle_id"/>
+                <field name="service_id"/>
+                <field name="provider_id"/>
+                <field name="scheduled_date"/>
+                <field name="amount"/>
+                <field name="state"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
+                                        <span t-attf-class="float-right badge #{record.state.raw_value == 'draft' ? 'bg-info' : record.state.raw_value == 'confirmed' ? 'bg-primary' : record.state.raw_value == 'scheduled' ? 'bg-warning' : record.state.raw_value == 'in_progress' ? 'bg-success' : record.state.raw_value == 'completed' ? 'bg-success' : 'bg-danger'}">
+                                            <field name="state"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Customer:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <field name="partner_id"/>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Vehicle:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <field name="vehicle_id"/>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Service:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <field name="service_id"/>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Provider:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <field name="provider_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_footer">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small>
+                                            <i class="fa fa-clock-o" title="Scheduled Date"/>
+                                            <field name="scheduled_date"/>
+                                        </small>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <strong>
+                                            <field name="amount" widget="monetary"/>
+                                            <field name="currency_id" invisible="1"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- Dashboard Menu -->
     <menuitem id="menu_auto_voyage_dashboard" name="Dashboard" parent="menu_auto_voyage_root" action="action_auto_voyage_dashboard" sequence="5"/>
 
