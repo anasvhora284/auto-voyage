@@ -1,0 +1,321 @@
+/* Auto Voyage Portal CSS */
+.custom_image_height{
+    max-height: 250px !important;
+    object-fit: cover !important;
+}
+
+
+/* Theme Colors */
+:root {
+    --av-primary: #714b67;
+    --av-primary-light: #8a5d7e;
+    --av-primary-dark: #583a50;
+    --av-text: #fff;
+    --av-gray: #f8f9fa;
+    --av-border: #dee2e6;
+}
+
+.color-primary {
+    color: var(--av-primary) !important;
+}
+
+.color-primary-light {
+    color: var(--av-primary-light) !important;
+}
+
+.color-primary-dark {
+    color: var(--av-primary-dark) !important;
+}
+
+.color-text {
+    color: var(--av-text) !important;
+}
+
+.color-gray {
+    color: var(--av-gray) !important;
+}
+
+.color-border {
+    color: var(--av-border) !important;
+}
+
+/* Common Styles */
+.text-av-primary {
+    color: var(--av-primary) !important;
+}
+
+.bg-av-primary {
+    background-color: var(--av-primary) !important;
+    color: var(--av-text);
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--av-primary);
+    color: var(--av-text);
+    padding: 4rem 0;
+    position: relative;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--av-primary), var(--av-primary-light));
+    opacity: 0.9;
+}
+
+/* Process Numbers */
+.process-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--av-text);
+    background-color: var(--av-primary);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.process-card:hover .process-number {
+    transform: scale(1.1);
+    background-color: var(--av-primary-light);
+}
+
+/* Cards */
+.service-card,
+.provider-card,
+.feature-card,
+.category-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover,
+.provider-card:hover,
+.feature-card:hover,
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Provider Card Specific */
+.provider-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.provider-image {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.status-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.available {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.busy {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Rating Stars */
+.rating {
+    margin: 1rem 0;
+}
+
+.rating .fa-star {
+    color: #ffd700;
+    margin-right: 2px;
+}
+
+.rating-count {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--av-text);
+    border-color: var(--av-primary);
+    color: var(--av-primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--av-gray);
+    color: var(--av-primary);
+    border-color: var(--av-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-primary {
+    color: var(--av-primary);
+    border-color: var(--av-primary);
+    border-radius: 25px;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--av-primary);
+    color: var(--av-text);
+}
+
+/* Forms */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--av-border);
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--av-primary);
+    box-shadow: 0 0 0 0.2rem rgba(113, 75, 103, 0.25);
+}
+
+/* Booking Form */
+.booking-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Service Process */
+.process-section {
+    background-color: var(--av-gray);
+}
+
+.process-card {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    height: 100%;
+}
+
+/* Reviews Section */
+.review-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-meta {
+    margin-left: 1rem;
+}
+
+.review-date {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+/* Call to Action Sections */
+.cta-section {
+    background-color: var(--av-primary);
+    color: var(--av-text);
+    padding: 4rem 0;
+}
+
+/* Portal Dashboard */
+.portal-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.portal-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+
+    .process-number {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .service-card,
+    .provider-card,
+    .feature-card,
+    .category-card {
+        padding: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--av-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--av-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--av-primary-light);
+}

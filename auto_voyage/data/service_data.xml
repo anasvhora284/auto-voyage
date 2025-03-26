@@ -8,6 +8,7 @@
         <field name="description">Complete oil change service including oil filter replacement and basic inspection.</field>
         <field name="duration">1.0</field>
         <field name="price">49.99</field>
+        <field name="icon">fa-oil-can</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">False</field>
         <field name="required_expertise">basic</field>
@@ -20,6 +21,7 @@
         <field name="description">Standard tire rotation service with pressure check and balance inspection.</field>
         <field name="duration">0.75</field>
         <field name="price">29.99</field>
+        <field name="icon">fa-tire</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">False</field>
         <field name="required_expertise">basic</field>
@@ -33,6 +35,7 @@
         <field name="description">Comprehensive vehicle inspection including safety checks and diagnostic scanning.</field>
         <field name="duration">1.5</field>
         <field name="price">79.99</field>
+        <field name="icon">fa-clipboard-check</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">False</field>
         <field name="required_expertise">intermediate</field>
@@ -46,6 +49,7 @@
         <field name="description">Complete brake service including pad replacement and rotor inspection.</field>
         <field name="duration">2.0</field>
         <field name="price">199.99</field>
+        <field name="icon">fa-brake-warning</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">True</field>
         <field name="required_expertise">advanced</field>
@@ -59,6 +63,7 @@
         <field name="description">Complete interior and exterior detailing service.</field>
         <field name="duration">4.0</field>
         <field name="price">149.99</field>
+        <field name="icon">fa-spray-can</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">False</field>
         <field name="required_expertise">intermediate</field>
@@ -72,6 +77,7 @@
         <field name="description">Complete engine diagnostic with computerized analysis.</field>
         <field name="duration">2.0</field>
         <field name="price">129.99</field>
+        <field name="icon">fa-engine</field>
         <field name="requires_appointment">True</field>
         <field name="requires_inspection">True</field>
         <field name="required_expertise">specialist</field>

@@ -16,7 +16,7 @@ class ServiceContract(models.Model):
     # Basic Information
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     vehicle_id = fields.Many2one('auto.voyage.vehicle', string='Vehicle', required=True, tracking=True,
-                                domain="[('partner_id', '=', partner_id)]")
+                                domain="[('partner_id', '=', partner_id)]", ondelete='cascade')
     provider_id = fields.Many2one('auto.voyage.service.provider', string='Service Provider', 
                                  required=True, tracking=True)
     

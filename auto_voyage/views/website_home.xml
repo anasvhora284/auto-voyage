@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Homepage -->
+    <template id="homepage" name="Auto Voyage Homepage">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <!-- Hero Section -->
+                <section class="hero-section" t-attf-style="background-image: url('/auto_voyage/static/src/img/hero_image.jpg')">
+                    <div class="container">
+                        <div class="row align-items-center min-vh-75">
+                            <div class="col-lg-8 text-white">
+                                <h1 class="display-4 fw-bold mb-4">Professional Vehicle Service at Your Fingertips</h1>
+                                <p class="lead mb-4">Book automotive services easily with our network of certified technicians. Quality service, transparent pricing, and convenience guaranteed.</p>
+                                <a href="/services" class="btn btn-primary btn-lg color-primary">Book a Service</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+               <section class="services-section py-5">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Our Services</h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <img src="/auto_voyage/static/src/img/maintenance.jpg" alt="Maintenance" class="card-img-top img-fluid custom_image_height" />
+                                    <div class="card-body d-flex flex-column">
+                                        <h3 class="card-title text-center">Regular Maintenance</h3>
+                                        <p class="card-text">Keep your vehicle in top condition with our comprehensive maintenance services.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <img src="/auto_voyage/static/src/img/repair.jpg" alt="Repairs" class="card-img-top img-fluid custom_image_height" />
+                                    <div class="card-body d-flex flex-column">
+                                        <h3 class="card-title text-center">Repairs</h3>
+                                        <p class="card-text">Expert repair services for all makes and models.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <img src="/auto_voyage/static/src/img/inspection.jpg" alt="Inspection" class="card-img-top img-fluid custom_image_height" />
+                                    <div class="card-body d-flex flex-column">
+                                        <h3 class="card-title text-center">Inspection</h3>
+                                        <p class="card-text">Thorough vehicle inspections to ensure safety and performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Why Choose Us Section -->
+                <section class="why-choose-us py-5 bg-light">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Why Choose Auto Voyage</h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card feature-card d-flex h-100">
+                                    <div class="text-center d-flex h-100 flex-column justify-content-between">
+                                        <i class="fa fa-users fa-3x mb-3 color-primary"></i>
+                                        <h3>Expert Technicians</h3>
+                                        <p>Our certified technicians bring years of experience and expertise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card feature-card d-flex h-100">
+                                    <div class="text-center d-flex h-100 flex-column justify-content-between">
+                                        <i class="fa fa-calendar fa-3x mb-3 color-primary"></i>
+                                        <h3>Convenient Scheduling</h3>
+                                        <p>Book appointments online anytime, anywhere.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card feature-card d-flex h-100">
+                                    <div class="text-center d-flex h-100 flex-column justify-content-between">
+                                        <i class="fa fa-shield fa-3x mb-3 color-primary"></i>
+                                        <h3>Warranty Guarantee</h3>
+                                        <p>All our services come with warranty coverage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Service Providers Section -->
+                <section class="providers-section py-5">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Our Service Providers</h2>
+                        <div class="row g-4">
+                            <t t-foreach="providers" t-as="provider">
+                                <div class="col-md-4">
+                                    <div class="provider-card text-center">
+                                        <img t-if="provider.image" t-att-src="image_data_uri(provider.image)" class="rounded-circle mb-3" width="150" height="150" alt="Provider"/>
+                                        <img t-else="" src="/auto_voyage/static/src/img/default_provider.png" class="rounded-circle mb-3" width="150" height="150" alt="Default Provider"/>
+                                        <h3><t t-esc="provider.name"/></h3>
+                                        <p class="text-muted" widget="badge" decoration-info="provider.expertise_level in (advanced)"><t t-esc="provider.expertise_level"/></p>
+                                        
+                                        <div class="rating">
+                                            <t t-foreach="range(int(provider.rating))" t-as="star">
+                                                <i class="fa fa-star text-warning"></i>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Call to Action -->
+                <section class="cta-section py-5 bg-primary text-white">
+                    <div class="container text-center">
+                        <h2 class="mb-4">Ready to Experience Premium Vehicle Service?</h2>
+                        <p class="lead mb-4">Join thousands of satisfied customers who trust Auto Voyage for their vehicle care needs.</p>
+                        <a href="/services" class="btn btn-light btn-lg">Book a Service Now</a>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo> 

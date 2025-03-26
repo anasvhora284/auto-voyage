@@ -22,6 +22,7 @@ class Service(models.Model):
     description = fields.Text(string='Description')
     duration = fields.Float(string='Expected Duration (Hours)', default=1.0)
     price = fields.Float(string='Standard Price', tracking=True)
+    icon = fields.Char(string='Font Awesome Icon', default='fa-wrench', help='Font Awesome icon class (e.g. fa-wrench, fa-car)')
     
     active = fields.Boolean(default=True, tracking=True)
     note = fields.Text(string='Internal Notes')
@@ -37,6 +38,8 @@ class Service(models.Model):
         ('advanced', 'Advanced'),
         ('specialist', 'Specialist')
     ], string='Required Expertise', default='basic', required=True)
+    
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
     
     _sql_constraints = [
         ('code_uniq', 'unique(code)', 'Service Code must be unique!')

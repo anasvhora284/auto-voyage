@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add menu items to portal -->
+    <template id="portal_my_home_menu_auto_voyage" name="Portal Menu Auto Voyage" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'vehicle' or page_name == 'vehicles'" t-attf-class="breadcrumb-item #{'active ' if not vehicle else ''}">
+                <a t-if="vehicle" t-attf-href="/my/vehicles?{{ keep_query() }}">Vehicles</a>
+                <t t-else="">Vehicles</t>
+            </li>
+            <li t-if="vehicle" class="breadcrumb-item active">
+                <t t-esc="vehicle.name"/>
+            </li>
+            <li t-if="page_name == 'service_request' or page_name == 'service_requests'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
+                <a t-if="service_request" t-attf-href="/my/service-requests?{{ keep_query() }}">Service Requests</a>
+                <t t-else="">Service Requests</t>
+            </li>
+            <li t-if="service_request" class="breadcrumb-item active">
+                <t t-esc="service_request.name"/>
+            </li>
+            <li t-if="page_name == 'provider_service'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
+                <a t-if="service_request" t-attf-href="/my/provider-services?{{ keep_query() }}">My Services</a>
+                <t t-else="">My Services</t>
+            </li>
+            <li t-if="page_name == 'provider_service' and service_request" class="breadcrumb-item active">
+                <t t-esc="service_request.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_auto_voyage" name="Portal My Home Auto Voyage" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="vehicle_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Vehicles</t>
+                <t t-set="url" t-value="'/my/vehicles'"/>
+                <t t-set="count" t-value="vehicle_count"/>
+                <t t-set="placeholder_count" t-value="'vehicle_count'"/>
+            </t>
+            <t t-if="service_request_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Service Requests</t>
+                <t t-set="url" t-value="'/my/service-requests'"/>
+                <t t-set="count" t-value="service_request_count"/>
+                <t t-set="placeholder_count" t-value="'service_request_count'"/>
+            </t>
+            <t t-set="provider" t-value="request.env['auto.voyage.service.provider'].sudo().search([('partner_id', '=', user.partner_id.id)], limit=1)"/>
+            <t t-if="provider">
+                <div class="col-12 col-sm-6 col-md-4 mt-3">
+                    <div class="card border-primary h-100">
+                        <div class="card-body">
+                            <i class="fa fa-wrench fa-fw me-2 text-primary"/>
+                            <span class="card-title">
+                                <span class="font-weight-bold">Service Provider Dashboard</span>
+                            </span>
+                            <div class="card-text mt-1 text-muted">
+                                <p>Manage your service requests as a provider</p>
+                            </div>
+                            <a href="/my/provider-services" class="stretched-link small"><i class="fa fa-arrow-right me-1"/>View Provider Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Vehicles Portal Templates -->
+    <template id="portal_my_vehicles_list" name="My Vehicles">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Vehicles</t>
+            </t>
+            <t t-if="not vehicles">
+                <div class="alert alert-info" role="alert">
+                    There are currently no vehicles for your account.
+                </div>
+            </t>
+            <t t-if="vehicles">
+                <div class="row mt-4 mb-4">
+                    <div class="col-12 text-end">
+                        <a href="/booking" class="btn btn-primary">
+                            <i class="fa fa-plus me-1"/>Book Service
+                        </a>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <t t-foreach="vehicles" t-as="vehicle">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <h5 class="card-title">
+                                                <a t-attf-href="/my/vehicle/#{vehicle.id}" t-esc="vehicle.name"/>
+                                            </h5>
+                                            <p class="card-text mb-0">
+                                                <strong>License:</strong> <span t-esc="vehicle.license_plate"/>
+                                            </p>
+                                            <p class="card-text mb-0">
+                                                <strong>VIN:</strong> <span t-esc="vehicle.vin"/>
+                                            </p>
+                                            <p class="card-text mb-0">
+                                                <strong>Mileage:</strong> <span t-esc="'{:,}'.format(vehicle.mileage)"/>
+                                            </p>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <span t-attf-class="badge #{'bg-success' if vehicle.state == 'active' else 'bg-warning' if vehicle.state == 'in_service' else 'bg-secondary'}">
+                                                <t t-esc="vehicle.state.replace('_', ' ').title()"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white border-top-0">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <a t-attf-href="/my/vehicle/#{vehicle.id}" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-info-circle me-1"/>Details
+                                            </a>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <a href="/booking" class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-wrench me-1"/>Service
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_vehicle_detail_view" name="My Vehicle Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="auto_voyage.group_auto_voyage_manager">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=auto.voyage.vehicle&amp;id=%s&amp;view_type=form' % (vehicle.id)"/>
+                </t>
+            </t>
+
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Vehicle Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h3 t-esc="vehicle.name"/>
+                                <span t-attf-class="badge #{'bg-success' if vehicle.state == 'active' or vehicle.state == 'in_service' else 'bg-warning' if vehicle.state == 'in_service' else 'bg-secondary'}">
+                                    <t t-esc="vehicle.state.replace('_', ' ').title()"/>
+                                </span>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <p><strong>Make:</strong> <span t-esc="vehicle.make"/></p>
+                                    <p><strong>Model:</strong> <span t-esc="vehicle.model"/></p>
+                                    <p><strong>Year:</strong> <span t-esc="vehicle.year"/></p>
+                                    <p><strong>Color:</strong> <span t-esc="vehicle.color"/></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>License Plate:</strong> <span t-esc="vehicle.license_plate"/></p>
+                                    <p><strong>VIN:</strong> <span t-esc="vehicle.vin"/></p>
+                                    <p><strong>Mileage:</strong> <span t-esc="'{:,}'.format(vehicle.mileage)"/></p>
+                                    <p><strong>Fuel Type:</strong> <span t-esc="vehicle.fuel_type.replace('_', ' ').title()"/></p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <p><strong>Transmission:</strong> <span t-esc="vehicle.transmission.replace('_', ' ').title()"/></p>
+                                    <p t-if="vehicle.insurance_number"><strong>Insurance Number:</strong> <span t-esc="vehicle.insurance_number"/></p>
+                                    <p t-if="vehicle.insurance_provider"><strong>Insurance Provider:</strong> <span t-esc="vehicle.insurance_provider"/></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p t-if="vehicle.insurance_expiry"><strong>Insurance Expiry:</strong> <span t-esc="vehicle.insurance_expiry.strftime('%Y-%m-%d') if vehicle.insurance_expiry else 'Not Set'"/></p>
+                                    <p t-if="vehicle.registration_expiry"><strong>Registration Expiry:</strong> <span t-esc="vehicle.registration_expiry.strftime('%Y-%m-%d') if vehicle.registration_expiry else 'Not Set'"/></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Service Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Last Service:</strong> <span t-esc="vehicle.last_service_date.strftime('%Y-%m-%d') if vehicle.last_service_date else 'Not Available'"/></p>
+                            <p><strong>Next Service Due:</strong> <span t-esc="vehicle.next_service_date.strftime('%Y-%m-%d') if vehicle.next_service_date else 'Not Scheduled'"/></p>
+                            <p><strong>Total Services:</strong> <span t-esc="vehicle.service_count"/></p>
+                            
+                            <div class="mt-3 text-center">
+                                <a href="/booking" class="btn btn-primary">Book a Service</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Service Requests Portal Templates -->
+    <template id="portal_my_service_requests_list" name="My Service Requests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Service Requests</t>
+            </t>
+            <t t-if="not service_requests">
+                <div class="alert alert-info" role="alert">
+                    There are currently no service requests for your account.
+                </div>
+            </t>
+            <t t-if="service_requests">
+                <div class="row mt-4 mb-4">
+                    <div class="col-12 text-end">
+                        <a href="/booking" class="btn btn-primary">
+                            <i class="fa fa-plus me-1"/>New Service Request
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover o_portal_my_doc_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Reference</th>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Scheduled Date</th>
+                                <th>Provider</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="service_requests" t-as="service_request">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/service-request/#{service_request.id}" t-esc="service_request.name"/>
+                                    </td>
+                                    <td t-esc="service_request.vehicle_id.name"/>
+                                    <td t-esc="service_request.service_id.name"/>
+                                    <td t-esc="service_request.scheduled_date"/>
+                                    <td t-esc="service_request.provider_id.partner_id.name or '-'"/>
+                                    <td>
+                                        <span t-attf-class="badge #{service_request.state == 'draft' and 'bg-info' or service_request.state == 'confirmed' and 'bg-primary' or service_request.state == 'scheduled' and 'bg-warning' or service_request.state == 'in_progress' and 'bg-primary' or service_request.state == 'completed' and 'bg-success' or service_request.state == 'cancelled' and 'bg-danger' or 'bg-secondary'}">
+                                            <t t-esc="service_request.state.replace('_', ' ').title()"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="o_portal_pager">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_service_request_detail_view" name="Service Request Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="auto_voyage.group_auto_voyage_manager">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=auto.voyage.service.request&amp;id=%s&amp;view_type=form' % (service_request.id)"/>
+                </t>
+            </t>
+
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h4 class="mb-0">Service Request</h4>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span t-attf-class="badge #{service_request.state == 'draft' and 'bg-info' or service_request.state == 'confirmed' and 'bg-primary' or service_request.state == 'scheduled' and 'bg-warning' or service_request.state == 'in_progress' and 'bg-success' or service_request.state == 'completed' and 'bg-success' or 'bg-danger'}">
+                                        <t t-esc="service_request.state.replace('_', ' ').title()"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h3 t-esc="service_request.name"/>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <p><strong>Vehicle:</strong> <span t-esc="service_request.vehicle_id.name"/></p>
+                                    <p><strong>Service:</strong> <span t-esc="service_request.service_id.name"/></p>
+                                    <p><strong>Provider:</strong> <span t-esc="service_request.provider_id.partner_id.name or 'Not assigned'"/></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Scheduled Date:</strong> <span t-esc="service_request.scheduled_date"/></p>
+                                    <p t-if="service_request.completion_date"><strong>Completion Date:</strong> <span t-esc="service_request.completion_date"/></p>
+                                    <p><strong>Amount:</strong> <span t-esc="service_request.amount" t-options='{"widget": "monetary", "display_currency": service_request.currency_id}'/></p>
+                                </div>
+                            </div>
+                            
+                            <h5>Description</h5>
+                            <div class="mb-4 border p-3 rounded bg-light">
+                                <p t-esc="service_request.description or 'No description provided.'" class="mb-0"/>
+                            </div>
+                            
+                            <h5>Notes &amp; Instructions</h5>
+                            <div class="mb-4 border p-3 rounded bg-light">
+                                <p>No notes provided.</p>
+                            </div>
+                            
+                            <t t-if="service_request.state == 'completed'">
+                                <h5>Completion Report</h5>
+                                <div class="mb-4 border p-3 rounded bg-light">
+                                    <p>No completion notes available.</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Service Timeline</h4>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-file-alt me-2 text-info"/>
+                                        Draft
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state != 'draft' and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state != 'draft'" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-check-circle me-2 text-primary"/>
+                                        Confirmed
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state in ('confirmed', 'scheduled', 'in_progress', 'completed') and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state in ('confirmed', 'scheduled', 'in_progress', 'completed')" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-calendar-alt me-2 text-warning"/>
+                                        Scheduled
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state in ('scheduled', 'in_progress', 'completed') and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state in ('scheduled', 'in_progress', 'completed')" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-cogs me-2 text-success"/>
+                                        In Progress
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state in ('in_progress', 'completed') and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state in ('in_progress', 'completed')" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-flag-checkered me-2 text-success"/>
+                                        Completed
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state == 'completed' and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state == 'completed'" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <t t-if="service_request.state == 'completed'">
+                        <!-- Add rating section if service is completed -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Rate this Service</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Check if user has already rated -->
+                                <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', user.partner_id.id), ('service_request_id', '=', service_request.id)], limit=1)"/>
+                                
+                                <t t-if="existing_rating">
+                                    <div class="alert alert-info">
+                                        <p>You have already rated this service. Thank you for your feedback!</p>
+                                        <div class="mt-3">
+                                            <div class="mb-2">
+                                                <span class="text-muted">Overall Rating:</span>
+                                                <div class="ms-2 d-inline-block">
+                                                    <t t-foreach="range(1, 6)" t-as="star">
+                                                        <i t-attf-class="fa fa-star#{star &lt;= existing_rating.overall_rating and '' or '-o'}" style="color: #FFD700;"></i>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="text-muted">Your Comment:</span>
+                                                <p class="mt-2 border p-2 rounded bg-light" t-esc="existing_rating.comment or 'No comment provided.'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                
+                                <t t-else="">
+                                    <form action="/my/service-request/rate" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="service_request_id" t-att-value="service_request.id"/>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Overall Rating</label>
+                                            <div class="rating-stars">
+                                                <t t-foreach="range(1, 6)" t-as="star">
+                                                    <input type="radio" name="overall_rating" t-att-id="'star' + str(star)" t-att-value="star" t-att-checked="star == 5"/>
+                                                    <label t-attf-for="star#{star}" t-attf-title="#{star} star#{star > 1 and 's' or ''}">
+                                                        <i class="fa fa-star"></i>
+                                                    </label>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Quality</label>
+                                                <select name="quality_rating" class="form-select">
+                                                    <option value="5" selected="selected">Excellent (5)</option>
+                                                    <option value="4">Very Good (4)</option>
+                                                    <option value="3">Good (3)</option>
+                                                    <option value="2">Fair (2)</option>
+                                                    <option value="1">Poor (1)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Timeliness</label>
+                                                <select name="timeliness_rating" class="form-select">
+                                                    <option value="5" selected="selected">Excellent (5)</option>
+                                                    <option value="4">Very Good (4)</option>
+                                                    <option value="3">Good (3)</option>
+                                                    <option value="2">Fair (2)</option>
+                                                    <option value="1">Poor (1)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Value</label>
+                                                <select name="value_rating" class="form-select">
+                                                    <option value="5" selected="selected">Excellent (5)</option>
+                                                    <option value="4">Very Good (4)</option>
+                                                    <option value="3">Good (3)</option>
+                                                    <option value="2">Fair (2)</option>
+                                                    <option value="1">Poor (1)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="comment" class="form-label">Your Comments</label>
+                                            <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Share your experience with this service..."></textarea>
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Submit Rating</button>
+                                        </div>
+                                    </form>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal My Home: add vehicle and service request entries -->
+    <template id="portal_my_home" name="Show Vehicle and Service Requests" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Vehicles</t>
+                <t t-set="url" t-value="'/my/vehicles'"/>
+                <t t-set="placeholder_count" t-value="'vehicle_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Service Requests</t>
+                <t t-set="url" t-value="'/my/service-requests'"/>
+                <t t-set="placeholder_count" t-value="'service_request_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Contracts</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="placeholder_count" t-value="'contract_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Ratings &amp; Reviews</t>
+                <t t-set="url" t-value="'/my/ratings'"/>
+                <t t-set="placeholder_count" t-value="'rating_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Discussions</t>
+                <t t-set="url" t-value="'/my/discussions'"/>
+                <t t-set="placeholder_count" t-value="'discussion_count'"/>
+            </t>
+        </xpath>
+    </template>
+    
+    <!-- Portal My Vehicles -->
+    <template id="portal_my_vehicles" name="My Vehicles">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Vehicles</t>
+            </t>
+            
+            <div class="mb-4">
+                <a href="/my/vehicle/new" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Add New Vehicle
+                </a>
+            </div>
+            
+            <t t-if="not vehicles">
+                <div class="alert alert-info">
+                    <p class="mb-0">There are currently no vehicles registered in your account.</p>
+                </div>
+            </t>
+            
+            <t t-if="vehicles">
+                <div class="row mt-3">
+                    <t t-foreach="vehicles" t-as="vehicle">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="vehicle.name"/>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">License Plate:</span>
+                                        <span t-esc="vehicle.license_plate"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Make:</span>
+                                        <span t-esc="vehicle.make"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Model:</span>
+                                        <span t-esc="vehicle.model"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Year:</span>
+                                        <span t-esc="vehicle.year"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Mileage:</span>
+                                        <span t-esc="vehicle.mileage"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Status:</span>
+                                        <span t-attf-class="badge {{vehicle.state == 'active' and 'bg-success' or (vehicle.state == 'in_service' and 'bg-warning' or 'bg-danger')}}">
+                                            <t t-esc="vehicle.state.replace('_', ' ').title()"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="d-flex justify-content-between">
+                                        <a t-att-href="'/my/vehicle/%s' % vehicle.id" class="btn btn-sm btn-outline-primary">
+                                            View Details
+                                        </a>
+                                        <a t-att-href="'/booking?vehicle_id=%s' % vehicle.id" class="btn btn-sm btn-primary">
+                                            Book Service
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                
+                <div class="o_portal_pager mt-3">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+    <!-- Portal Vehicle Detail -->
+    <template id="portal_my_vehicle_detail" name="My Vehicle Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="website.group_multi_website">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=%s&amp;id=%s&amp;view_type=form' % ('auto.voyage.vehicle', vehicle.id)"/>
+                </t>
+            </t>
+            
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="mb-0" t-esc="vehicle.name"/>
+                                <span t-attf-class="badge #{'bg-success' if vehicle.state == 'active' else 'bg-warning' if vehicle.state == 'in_service' else 'bg-danger'}">
+                                    <t t-esc="vehicle.state.replace('_', ' ').title()"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h5>Basic Information</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="text-muted">License Plate:</td>
+                                            <td t-esc="vehicle.license_plate"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Make:</td>
+                                            <td t-esc="vehicle.make"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Model:</td>
+                                            <td t-esc="vehicle.model"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Year:</td>
+                                            <td t-esc="vehicle.year"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Color:</td>
+                                            <td t-esc="vehicle.color"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Mileage:</td>
+                                            <td t-esc="vehicle.mileage"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Additional Information</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="text-muted">VIN:</td>
+                                            <td t-esc="vehicle.vin"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Fuel Type:</td>
+                                            <td t-esc="vehicle.fuel_type"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Transmission:</td>
+                                            <td t-esc="vehicle.transmission"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Last Service:</td>
+                                            <td t-esc="vehicle.last_service_date.strftime('%Y-%m-%d') if vehicle.last_service_date else 'Not Available'"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Next Service:</td>
+                                            <td t-esc="vehicle.next_service_date.strftime('%Y-%m-%d') if vehicle.next_service_date else 'Not Scheduled'"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h5>Insurance Information</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="text-muted">Insurance Number:</td>
+                                            <td t-esc="vehicle.insurance_number or '-'"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Insurance Provider:</td>
+                                            <td t-esc="vehicle.insurance_provider or '-'"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Insurance Expiry:</td>
+                                            <td t-esc="vehicle.insurance_expiry.strftime('%Y-%m-%d') if vehicle.insurance_expiry else 'Not Set'"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Registration Information</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="text-muted">Registration Expiry:</td>
+                                            <td t-esc="vehicle.registration_expiry.strftime('%Y-%m-%d') if vehicle.registration_expiry else 'Not Set'"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5>Service History</h5>
+                                    <a t-att-href="'/booking?vehicle_id=%s' % vehicle.id" class="btn btn-sm btn-primary">
+                                        Book New Service
+                                    </a>
+                                </div>
+                                <t t-set="service_requests" t-value="env['auto.voyage.service.request'].sudo().search([('vehicle_id', '=', vehicle.id)], order='scheduled_date desc')"/>
+                                <t t-if="not service_requests">
+                                    <div class="alert alert-info">
+                                        <p class="mb-0">No service history found for this vehicle.</p>
+                                    </div>
+                                </t>
+                                <t t-if="service_requests">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Reference</th>
+                                                    <th>Service</th>
+                                                    <th>Date</th>
+                                                    <th>Provider</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="service_requests" t-as="sr">
+                                                    <tr>
+                                                        <td t-esc="sr.name"/>
+                                                        <td t-esc="sr.service_id.name"/>
+                                                        <td>
+                                                            <t t-esc="sr.scheduled_date.strftime('%Y-%m-%d %H:%M:%S')"/>
+                                                        </td>
+                                                        <td t-esc="sr.provider_id.partner_id.name or '-'"/>
+                                                        <td>
+                                                            <t t-set="badge_class" t-value="'bg-success' if sr.state == 'completed' else ('bg-danger' if sr.state == 'cancelled' else ('bg-primary' if sr.state == 'in_progress' else 'bg-warning'))"/>
+                                                            <span t-att-class="'badge ' + badge_class">
+                                                                <t t-esc="sr.state.replace('_', ' ').title()"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a t-att-href="'/my/service-request/%s' % sr.id" class="btn btn-sm btn-outline-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a t-att-href="'/booking?vehicle_id=%s' % vehicle.id" class="btn btn-primary">
+                                    <i class="fa fa-wrench me-2"></i> Book Service
+                                </a>
+                                <a t-att-href="'/my/vehicle/edit/%s' % vehicle.id" class="btn btn-outline-primary">
+                                    <i class="fa fa-edit me-2"></i> Edit Vehicle
+                                </a>
+                                <a href="#" class="btn btn-outline-secondary">
+                                    <i class="fa fa-file-alt me-2"></i> View Documents
+                                </a>
+                                <a href="#" class="btn btn-outline-danger">
+                                    <i class="fa fa-trash me-2"></i> Delete Vehicle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Maintenance Reminders</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <span class="badge rounded-pill bg-primary p-2">
+                                        <i class="fa fa-calendar fa-lg"></i>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Next Service</h6>
+                                    <p class="mb-0 small text-muted" t-field="vehicle.next_service_date" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <span class="badge rounded-pill bg-info p-2">
+                                        <i class="fa fa-id-card fa-lg"></i>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Registration Expiry</h6>
+                                    <p class="mb-0 small text-muted" t-field="vehicle.registration_expiry" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <span class="badge rounded-pill bg-warning p-2">
+                                        <i class="fa fa-shield-alt fa-lg"></i>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Insurance Expiry</h6>
+                                    <p class="mb-0 small text-muted" t-field="vehicle.insurance_expiry" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Add New Vehicle Form -->
+    <template id="portal_create_vehicle" name="Create Vehicle">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Add New Vehicle</t>
+            </t>
+            
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">Add New Vehicle</h3>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/vehicle/create" method="post" id="create_vehicle_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <t t-if="error_message">
+                                        <div class="alert alert-danger" role="alert">
+                                            <ul class="mb-0">
+                                                <li t-foreach="error_message" t-as="err" t-esc="err"/>
+                                            </ul>
+                                        </div>
+                                    </t>
+                                    
+                                    <t t-if="success">
+                                        <div class="alert alert-success" role="alert">
+                                            <p>Your vehicle has been successfully created.</p>
+                                            <a href="/my/vehicles" class="btn btn-primary">View All Vehicles</a>
+                                        </div>
+                                    </t>
+                                    
+                                    <div t-if="not success">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="make" class="form-label">Make*</label>
+                                                <input type="text" class="form-control" name="make" id="make" required="required" t-att-value="make"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="model" class="form-label">Model*</label>
+                                                <input type="text" class="form-control" name="model" id="model" required="required" t-att-value="model"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="year" class="form-label">Year*</label>
+                                                <input type="number" class="form-control" name="year" id="year" required="required" min="1900" max="2099" t-att-value="year"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="license_plate" class="form-label">License Plate*</label>
+                                                <input type="text" class="form-control" name="license_plate" id="license_plate" required="required" t-att-value="license_plate"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="color" class="form-label">Color</label>
+                                                <input type="text" class="form-control" name="color" id="color" t-att-value="color"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="vin" class="form-label">VIN</label>
+                                                <input type="text" class="form-control" name="vin" id="vin" t-att-value="vin"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fuel_type" class="form-label">Fuel Type</label>
+                                                <select class="form-select" name="fuel_type" id="fuel_type">
+                                                    <option value="gasoline" t-att-selected="fuel_type == 'gasoline'">Gasoline</option>
+                                                    <option value="diesel" t-att-selected="fuel_type == 'diesel'">Diesel</option>
+                                                    <option value="electric" t-att-selected="fuel_type == 'electric'">Electric</option>
+                                                    <option value="hybrid" t-att-selected="fuel_type == 'hybrid'">Hybrid</option>
+                                                    <option value="other" t-att-selected="fuel_type == 'other'">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="transmission" class="form-label">Transmission</label>
+                                                <select class="form-select" name="transmission" id="transmission">
+                                                    <option value="automatic" t-att-selected="transmission == 'automatic'">Automatic</option>
+                                                    <option value="manual" t-att-selected="transmission == 'manual'">Manual</option>
+                                                    <option value="cvt" t-att-selected="transmission == 'cvt'">CVT</option>
+                                                    <option value="other" t-att-selected="transmission == 'other'">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="mileage" class="form-label">Current Mileage</label>
+                                                <input type="number" class="form-control" name="mileage" id="mileage" min="0" t-att-value="mileage"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <h5 class="mt-4">Insurance Information</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_number" class="form-label">Insurance Number</label>
+                                                <input type="text" class="form-control" name="insurance_number" id="insurance_number" t-att-value="insurance_number"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_provider" class="form-label">Insurance Provider</label>
+                                                <input type="text" class="form-control" name="insurance_provider" id="insurance_provider" t-att-value="insurance_provider"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_expiry" class="form-label">Insurance Expiry Date</label>
+                                                <input type="date" class="form-control" name="insurance_expiry" id="insurance_expiry" t-att-value="insurance_expiry"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="registration_expiry" class="form-label">Registration Expiry Date</label>
+                                                <input type="date" class="form-control" name="registration_expiry" id="registration_expiry" t-att-value="registration_expiry"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between mt-4">
+                                            <a href="/my/vehicles" class="btn btn-secondary">Cancel</a>
+                                            <button type="submit" class="btn btn-primary">Create Vehicle</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Edit Vehicle Form -->
+    <template id="portal_edit_vehicle" name="Edit Vehicle">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">Edit Vehicle: <t t-esc="vehicle.name"/></h3>
+                            </div>
+                            <div class="card-body">
+                                <form t-att-action="'/my/vehicle/update/%s' % vehicle.id" method="post" id="edit_vehicle_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <t t-if="error" t-raw="error"/>
+                                    <t t-if="success">
+                                        <div class="alert alert-success" role="alert">
+                                            <p>Your vehicle has been successfully updated.</p>
+                                            <div class="mt-3">
+                                                <a t-att-href="'/my/vehicle/%s' % vehicle.id" class="btn btn-primary">View Vehicle</a>
+                                                <a href="/my/vehicles" class="btn btn-outline-secondary">View All Vehicles</a>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    
+                                    <div t-if="not success">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="make" class="form-label">Make*</label>
+                                                <input type="text" class="form-control" name="make" id="make" required="required" t-att-value="make or ''"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="model" class="form-label">Model*</label>
+                                                <input type="text" class="form-control" name="model" id="model" required="required" t-att-value="model or ''"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="year" class="form-label">Year*</label>
+                                                <input type="number" class="form-control" name="year" id="year" required="required" min="1900" max="2099" t-att-value="year or ''"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="license_plate" class="form-label">License Plate*</label>
+                                                <input type="text" class="form-control" name="license_plate" id="license_plate" required="required" t-att-value="license_plate or ''"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="color" class="form-label">Color</label>
+                                                <input type="text" class="form-control" name="color" id="color" t-att-value="color or ''"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="vin" class="form-label">VIN</label>
+                                                <input type="text" class="form-control" name="vin" id="vin" t-att-value="vin or ''"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fuel_type" class="form-label">Fuel Type</label>
+                                                <select class="form-select" name="fuel_type" id="fuel_type">
+                                                    <option value="gasoline" t-att-selected="fuel_type == 'gasoline'">Gasoline</option>
+                                                    <option value="diesel" t-att-selected="fuel_type == 'diesel'">Diesel</option>
+                                                    <option value="electric" t-att-selected="fuel_type == 'electric'">Electric</option>
+                                                    <option value="hybrid" t-att-selected="fuel_type == 'hybrid'">Hybrid</option>
+                                                    <option value="other" t-att-selected="fuel_type == 'other'">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="transmission" class="form-label">Transmission</label>
+                                                <select class="form-select" name="transmission" id="transmission">
+                                                    <option value="automatic" t-att-selected="transmission == 'automatic'">Automatic</option>
+                                                    <option value="manual" t-att-selected="transmission == 'manual'">Manual</option>
+                                                    <option value="cvt" t-att-selected="transmission == 'cvt'">CVT</option>
+                                                    <option value="other" t-att-selected="transmission == 'other'">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="mileage" class="form-label">Current Mileage</label>
+                                            <input type="number" class="form-control" name="mileage" id="mileage" t-att-value="mileage or ''"/>
+                                        </div>
+                                        
+                                        <hr class="my-4"/>
+                                        
+                                        <h5>Insurance Information (Optional)</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_number" class="form-label">Insurance Number</label>
+                                                <input type="text" class="form-control" name="insurance_number" id="insurance_number" t-att-value="insurance_number or ''"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_provider" class="form-label">Insurance Provider</label>
+                                                <input type="text" class="form-control" name="insurance_provider" id="insurance_provider" t-att-value="insurance_provider or ''"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="insurance_expiry" class="form-label">Insurance Expiry Date</label>
+                                                <input type="date" class="form-control" name="insurance_expiry" id="insurance_expiry" t-att-value="insurance_expiry or ''"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="registration_expiry" class="form-label">Registration Expiry Date</label>
+                                                <input type="date" class="form-control" name="registration_expiry" id="registration_expiry" t-att-value="registration_expiry or ''"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2 mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg">Update Vehicle</button>
+                                            <a t-att-href="'/my/vehicle/%s' % vehicle.id" class="btn btn-outline-secondary">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Service Request portal templates -->
+    <template id="portal_my_service_requests" name="My Service Requests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Service Requests</t>
+            </t>
+            
+            <div class="mb-4">
+                <a href="/booking" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Book New Service
+                </a>
+            </div>
+            
+            <t t-if="not service_requests">
+                <div class="alert alert-info">
+                    <p class="mb-0">There are currently no service requests in your account.</p>
+                </div>
+            </t>
+            
+            <t t-if="service_requests">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Reference</th>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Provider</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="service_requests" t-as="sr">
+                                <tr>
+                                    <td><span t-esc="sr.name"/></td>
+                                    <td><span t-esc="sr.vehicle_id.name"/></td>
+                                    <td><span t-esc="sr.service_id.name"/></td>
+                                    <td><span t-esc="sr.scheduled_date.strftime('%Y-%m-%d %H:%M:%S')"/></td>
+                                    <td><span t-esc="sr.provider_id.partner_id.name or '-'"/></td>
+                                    <td>
+                                        <span t-attf-class="badge #{'bg-success' if sr.state == 'completed' else 'bg-danger' if sr.state == 'cancelled' else 'bg-primary' if sr.state == 'in_progress' else 'bg-warning'}">
+                                            <t t-esc="sr.state.replace('_', ' ').title()"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a t-att-href="'/my/service-request/%s' % sr.id" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="o_portal_pager mt-3">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo> 

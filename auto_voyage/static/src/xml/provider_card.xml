@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ProviderCard" t-call="website.layout">
+        <div class="card provider-card mb-4">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img t-att-src="'/web/image?model=res.partner&amp;field=image_128&amp;id=' + provider.id" 
+                         class="img-fluid rounded-start provider-image" 
+                         t-att-alt="provider.name"/>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title" t-esc="provider.name"/>
+                        <div class="provider-rating mb-2">
+                            <span class="stars">
+                                <t t-foreach="range(5)" t-as="i">
+                                    <i t-attf-class="fa fa-star #{i &lt; provider.rating ? 'text-warning' : 'text-muted'}"/>
+                                </t>
+                            </span>
+                            <span class="rating-count text-muted ms-2" t-esc="'(' + provider.rating_count + ' reviews)'"/>
+                        </div>
+                        <p class="card-text provider-expertise">
+                            <i class="fa fa-tools me-2"/>
+                            <span t-esc="provider.expertise"/>
+                        </p>
+                        <p class="card-text provider-availability">
+                            <i class="fa fa-clock me-2"/>
+                            <span t-esc="provider.availability"/>
+                        </p>
+                        <div class="provider-specializations mb-3">
+                            <t t-foreach="provider.specializations" t-as="specialization">
+                                <span class="badge bg-primary me-1" t-esc="specialization"/>
+                            </t>
+                        </div>
+                        <div class="provider-actions">
+                            <a t-att-href="'/provider/' + provider.id" 
+                               class="btn btn-primary me-2">
+                                <i class="fa fa-user me-1"/>
+                                View Profile
+                            </a>
+                            <a t-att-href="'/service/book?provider_id=' + provider.id" 
+                               class="btn btn-success">
+                                <i class="fa fa-calendar-check me-1"/>
+                                Book Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates> 

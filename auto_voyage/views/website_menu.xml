@@ -1,0 +1,71 @@
+<odoo>
+    <record id="menu_home" model="website.menu">
+        <field name="name">Home</field>
+        <field name="url">/</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">1</field>
+    </record>
+
+    <!-- Grouping Services Menu -->
+    <record id="menu_services" model="website.menu">
+        <field name="name">Services</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">100</field>
+    </record>
+
+    <record id="menu_service_repairs" model="website.menu">
+        <field name="name">Repairs</field>
+        <field name="url">/services/repairs</field>
+        <field name="parent_id" ref="menu_services"/>
+        <field name="sequence" type="int">31</field>
+    </record>
+
+    <record id="menu_service_inspection" model="website.menu">
+        <field name="name">Inspection</field>
+        <field name="url">/services/inspection</field>
+        <field name="parent_id" ref="menu_services"/>
+        <field name="sequence" type="int">32</field>
+    </record>
+
+    <record id="menu_about" model="website.menu">
+        <field name="name">About Us</field>
+        <field name="url">/about</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">40</field>
+    </record>
+
+    <record id="menu_contact" model="website.menu">
+        <field name="name">Contact</field>
+        <field name="url">/contact</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">50</field>
+    </record>
+
+    <record id="menu_my_account" model="website.menu">
+        <field name="name">My Account</field>
+        <field name="url">/my</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">60</field>
+    </record>
+
+    <record id="menu_logout" model="website.menu">
+        <field name="name">Logout</field>
+        <field name="url">/web/logout</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">70</field>
+    </record>
+
+    <record id="menu_login" model="website.menu">
+        <field name="name">Login</field>
+        <field name="url">/web/login</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">80</field>
+    </record>
+
+    <record id="menu_signup" model="website.menu">
+        <field name="name">Sign Up</field>
+        <field name="url">/web/signup</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">90</field>
+    </record>
+</odoo>

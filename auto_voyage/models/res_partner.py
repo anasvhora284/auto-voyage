@@ -6,7 +6,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
     
     # Vehicle related fields
-    vehicle_ids = fields.One2many('auto.voyage.vehicle', 'partner_id', string='Vehicles')
+    vehicle_ids = fields.One2many('auto.voyage.vehicle', 'partner_id', string='Vehicles', ondelete='cascade')
     vehicle_count = fields.Integer(string='Vehicle Count', compute='_compute_vehicle_count')
     
     # Service request related fields

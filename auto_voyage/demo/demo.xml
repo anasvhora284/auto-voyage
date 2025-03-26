@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
+    <data>
     <!-- Demo Partners -->
     <record id="demo_partner_1" model="res.partner">
       <field name="name">John Smith</field>
@@ -319,7 +319,7 @@
       <field name="amount">1500.00</field>
       <field name="state">active</field>
       <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_oil_change'), ref('auto_voyage.service_tire_rotation'), ref('auto_voyage.service_general_inspection')])]"/>
-    </record>
+          </record>
 
     <record id="demo_contract_2" model="auto.voyage.contract">
       <field name="name">Basic Service Package</field>
@@ -332,7 +332,7 @@
       <field name="amount">800.00</field>
       <field name="state">draft</field>
       <field name="service_ids" eval="[(6, 0, [ref('auto_voyage.service_oil_change'), ref('auto_voyage.service_general_inspection')])]"/>
-    </record>
+          </record>
 
     <!-- Demo Ratings -->
     <record id="demo_rating_1" model="auto.voyage.rating">
@@ -347,7 +347,7 @@
       <field name="value_for_money">4</field>
       <field name="feedback">Excellent detailing service, car looks brand new!</field>
       <field name="state">published</field>
-    </record>
+          </record>
 
     <!-- Demo Discussions -->
     <record id="demo_discussion_1" model="auto.voyage.discussion">
@@ -358,7 +358,7 @@
       <field name="priority">2</field>
       <field name="description">Need to discuss the possibility of rescheduling the service to next week.</field>
       <field name="state">new</field>
-    </record>
+          </record>
 
     <record id="demo_discussion_2" model="auto.voyage.discussion">
       <field name="name">Technical Consultation</field>
@@ -368,6 +368,6 @@
       <field name="priority">3</field>
       <field name="description">Discussion about the diagnostic results and recommended actions for the Tesla.</field>
       <field name="state">in_progress</field>
-    </record>
-  </data>
+          </record>
+    </data>
 </odoo>

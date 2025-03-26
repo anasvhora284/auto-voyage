@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Services Page -->
+    <template id="services_page" name="Auto Voyage Services">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <!-- Hero Section -->
+                <section class="hero-section py-5 bg-light">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <h1 class="display-4 fw-bold mb-4">Our Services</h1>
+                                <p class="lead">Comprehensive vehicle care solutions for every need</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Services -->
+                <section class="all-services-section py-5 bg-light">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Explore Our Services</h2>
+                        <div class="row g-4">
+                            <t t-foreach="services" t-as="service">
+                                <div class="col-md-4 ">
+                                    <div class="service-card card h-100 d-flex justify-content-between">
+                                        <t t-if="service.category == 'maintenance'">
+                                            <img src="/auto_voyage/static/src/img/maintenance.jpg" t-att-alt="service.name" class="img-fluid  mb-3 custom_image_height"/>
+                                        </t>
+                                        <t t-elif="service.category == 'repair'">
+                                            <img src="/auto_voyage/static/src/img/repair.jpg" t-att-alt="service.name" class="img-fluid  mb-3 custom_image_height"/>
+                                        </t>
+                                        <t t-elif="service.category == 'inspection'">
+                                            <img src="/auto_voyage/static/src/img/inspection.jpg" t-att-alt="service.name" class="img-fluid  mb-3 custom_image_height"/>
+                                        </t>
+                                        <t t-elif="service.category == 'cleaning'">
+                                            <img src="/auto_voyage/static/src/img/cleaning.jpg" t-att-alt="service.name" class="img-fluid  mb-3 custom_image_height"/>
+                                        </t>
+                                        <t t-else="">
+                                            <img src="/auto_voyage/static/src/img/custom.jpg" t-att-alt="service.name" class="img-fluid  mb-3 custom_image_height"/>
+                                        </t>
+                                        <div>
+                                            <h3><t t-esc="service.name"/></h3>
+                                            <p><t t-esc="service.description"/></p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="price"><t t-esc="service.price"/></span>
+                                                <span class="duration"><i class="fa fa-clock"></i> <t t-esc="service.duration"/> mins</span>
+                                            </div>
+                                        </div>
+                                        <a t-att-href="'/booking?service=%s' % service.id" class="btn btn-primary mt-3">Book Now</a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Service Features -->
+                <section class="features-section py-5">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Why Choose Our Services</h2>
+                        <div class="row d-flex justify-content-center align-items-center gap-4">
+                            <div class="col-md-3 d-flex feature-card card">
+                                <div class="text-center flex-grow-1 d-flex flex-column justify-content-between">
+                                    <i class="fa fa-tools fa-3x mb-3 color-primary"></i>
+                                    <h3>Expert Technicians</h3>
+                                    <p>Our certified technicians bring years of experience and expertise to every service.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex feature-card card">
+                                <div class="text-center flex-grow-1 d-flex flex-column justify-content-between">
+                                    <i class="fa fa-cog fa-3x mb-3 color-primary"></i>
+                                    <h3>Quality Parts</h3>
+                                    <p>We use only genuine or high-quality compatible parts for all repairs.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex feature-card card">
+                                <div class="text-center flex-grow-1 d-flex flex-column justify-content-between">
+                                    <i class="fa fa-shield fa-3x mb-3 color-primary"></i>
+                                    <h3>Warranty Coverage</h3>
+                                    <p>All our services come with warranty coverage for your peace of mind.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Service Process -->
+                <section class="process-section py-5 bg-light">
+                    <div class="container">
+                        <h2 class="text-center mb-5">How It Works</h2>
+                        <div class="row g-4">
+                            <div class="col-md-3">
+                                <div class="process-card text-center">
+                                    <div class="process-number">1</div>
+                                    <h3>Book</h3>
+                                    <p>Choose your service and book online</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="process-card text-center">
+                                    <div class="process-number">2</div>
+                                    <h3>Drop-off</h3>
+                                    <p>Drop your vehicle at our service center</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="process-card text-center">
+                                    <div class="process-number">3</div>
+                                    <h3>Service</h3>
+                                    <p>Our experts perform the service</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="process-card text-center">
+                                    <div class="process-number">4</div>
+                                    <h3>Pick-up</h3>
+                                    <p>Pick up your serviced vehicle</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Call to Action -->
+                <section class="cta-section py-5 bg-primary text-white">
+                    <div class="container text-center">
+                        <h2 class="mb-4">Ready to Book Your Service?</h2>
+                        <p class="lead mb-4">Experience professional vehicle care with Auto Voyage</p>
+                        <a href="/booking" class="btn btn-light btn-lg">Book Now</a>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo> 

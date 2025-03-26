@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Service Provider Portal Templates -->
+    <template id="portal_provider_services" name="My Service Provider Dashboard">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Services</t>
+            </t>
+            <div class="row mt-4">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Provider Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <h3 t-esc="provider.partner_id.name"/>
+                            <p><strong>Code:</strong> <span t-esc="provider.code"/></p>
+                            <p><strong>Expertise Level:</strong> <span t-esc="provider.expertise_level.replace('_', ' ').title()"/></p>
+                            <p><strong>Work Schedule:</strong> <span t-esc="provider.work_schedule.replace('_', ' ').title()"/></p>
+                            <p><strong>Total Completed Services:</strong> <span t-esc="provider.total_services"/></p>
+                            <p><strong>Average Rating:</strong> <span t-esc="'%.1f' % provider.rating if provider.rating else 'Not rated'"/></p>
+                            <p><strong>Completion Rate:</strong> <span t-esc="'%.1f%%' % provider.completion_rate if provider.completion_rate else 'N/A'"/></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Services Offered</h4>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="provider.service_ids" t-as="service">
+                                    <li class="list-group-item">
+                                        <strong t-esc="service.name"/>
+                                        <span class="float-end badge bg-primary" t-esc="service.category.capitalize()"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <h4 class="mb-0">Service Requests</h4>
+                                </div>
+                                <div class="col-6">
+                                    <div class="dropdown float-end">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Filter by Status
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a t-attf-href="/my/provider-services?filterby=all" t-attf-class="dropdown-item#{'' if filterby == 'all' else ''}">All</a>
+                                            <a t-attf-href="/my/provider-services?filterby=scheduled" t-attf-class="dropdown-item#{'' if filterby == 'scheduled' else ''}">Scheduled</a>
+                                            <a t-attf-href="/my/provider-services?filterby=in_progress" t-attf-class="dropdown-item#{'' if filterby == 'in_progress' else ''}">In Progress</a>
+                                            <a t-attf-href="/my/provider-services?filterby=completed" t-attf-class="dropdown-item#{'' if filterby == 'completed' else ''}">Completed</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <t t-if="not service_requests">
+                                <div class="alert alert-info" role="alert">
+                                    There are currently no service requests assigned to you.
+                                </div>
+                            </t>
+                            <t t-if="service_requests">
+                                <div class="mb-4">
+                                    <h5 class="text-primary">Today's Schedule</h5>
+                                    <t t-set="today_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() == datetime.today().date())"/>
+                                    <t t-if="not today_requests">
+                                        <p>No services scheduled for today.</p>
+                                    </t>
+                                    <t t-if="today_requests">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Time</th>
+                                                        <th>Customer</th>
+                                                        <th>Service</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="today_requests" t-as="request">
+                                                        <tr>
+                                                            <td t-esc="request.scheduled_date"/>
+                                                            <td t-esc="request.partner_id.name"/>
+                                                            <td t-esc="request.service_id.name"/>
+                                                            <td>
+                                                                <span t-attf-class="badge #{request.state == 'scheduled' and 'bg-warning' or request.state == 'in_progress' and 'bg-success' or 'bg-secondary'}">
+                                                                    <t t-esc="request.state.replace('_', ' ').title()"/>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <a t-attf-href="/my/provider-service/#{request.id}" class="btn btn-sm btn-primary">View</a>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </t>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5 class="text-primary">Upcoming Services</h5>
+                                    <t t-set="upcoming_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() > datetime.today().date() and r.state in ('scheduled', 'confirmed'))"/>
+                                    <t t-if="not upcoming_requests">
+                                        <p>No upcoming services scheduled.</p>
+                                    </t>
+                                    <t t-if="upcoming_requests">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Customer</th>
+                                                        <th>Vehicle</th>
+                                                        <th>Service</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="upcoming_requests" t-as="request">
+                                                        <tr>
+                                                            <td t-esc="request.scheduled_date"/>
+                                                            <td t-esc="request.partner_id.name"/>
+                                                            <td t-esc="request.vehicle_id.name"/>
+                                                            <td t-esc="request.service_id.name"/>
+                                                            <td>
+                                                                <a t-attf-href="/my/provider-service/#{request.id}" class="btn btn-sm btn-primary">View</a>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </t>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-primary">All Assigned Services</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover o_portal_my_doc_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Reference</th>
+                                                    <th>Customer</th>
+                                                    <th>Service</th>
+                                                    <th>Scheduled Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="service_requests" t-as="request">
+                                                    <tr>
+                                                        <td t-esc="request.name"/>
+                                                        <td t-esc="request.partner_id.name"/>
+                                                        <td t-esc="request.service_id.name"/>
+                                                        <td t-esc="request.scheduled_date"/>
+                                                        <td>
+                                                            <span t-attf-class="badge #{request.state == 'draft' and 'bg-info' or request.state == 'confirmed' and 'bg-primary' or request.state == 'scheduled' and 'bg-warning' or request.state == 'in_progress' and 'bg-success' or request.state == 'completed' and 'bg-success' or 'bg-danger'}">
+                                                                <t t-esc="request.state.replace('_', ' ').title()"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a t-attf-href="/my/provider-service/#{request.id}" class="btn btn-sm btn-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="o_portal_pager">
+                                        <t t-call="portal.pager"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_provider_service_detail" name="Service Provider Service Detail">
+        <t t-call="portal.portal_layout">
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Service Request</h4>
+                            <span t-attf-class="badge #{service_request.state == 'draft' and 'bg-info' or service_request.state == 'confirmed' and 'bg-primary' or service_request.state == 'scheduled' and 'bg-warning' or service_request.state == 'in_progress' and 'bg-success' or service_request.state == 'completed' and 'bg-success' or 'bg-danger'}">
+                                <t t-esc="service_request.state.replace('_', ' ').title()"/>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h3 t-esc="service_request.name"/>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <p><strong>Customer:</strong> <span t-esc="service_request.partner_id.name"/></p>
+                                    <p><strong>Vehicle:</strong> <span t-esc="service_request.vehicle_id.name"/></p>
+                                    <p><strong>Service:</strong> <span t-esc="service_request.service_id.name"/></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Scheduled Date:</strong> <span t-esc="service_request.scheduled_date"/></p>
+                                    <p t-if="service_request.scheduled_end_date"><strong>Expected End:</strong> <span t-esc="service_request.scheduled_end_date"/></p>
+                                    <p t-if="service_request.completion_date"><strong>Completion Date:</strong> <span t-esc="service_request.completion_date"/></p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h5>Vehicle Details</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Make/Model:</strong> <span t-esc="service_request.vehicle_id.make"/> <span t-esc="service_request.vehicle_id.model"/></p>
+                                        <p><strong>Year:</strong> <span t-esc="service_request.vehicle_id.year"/></p>
+                                        <p><strong>Color:</strong> <span t-esc="service_request.vehicle_id.color"/></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>License Plate:</strong> <span t-esc="service_request.vehicle_id.license_plate"/></p>
+                                        <p><strong>VIN:</strong> <span t-esc="service_request.vehicle_id.vin"/></p>
+                                        <p><strong>Mileage:</strong> <span t-esc="'{:,}'.format(service_request.vehicle_id.mileage)"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h5>Service Description</h5>
+                                <p t-esc="service_request.description or 'No description provided.'"/>
+                            </div>
+                            
+                            <div t-if="service_request.customer_notes" class="mb-4">
+                                <h5>Customer Notes</h5>
+                                <p t-esc="service_request.customer_notes"/>
+                            </div>
+                            
+                            <div t-if="service_request.internal_notes" class="mb-4">
+                                <h5>Internal Notes</h5>
+                                <p t-esc="service_request.internal_notes"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Service Actions</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h5>Update Status</h5>
+                                
+                                <t t-if="service_request.state == 'scheduled'">
+                                    <a t-attf-href="/my/provider-service/#{service_request.id}/update_status?new_status=in_progress" 
+                                       class="btn btn-success mb-2 w-100">Start Service</a>
+                                    <p class="text-muted small">Click when you begin working on this service.</p>
+                                </t>
+                                
+                                <t t-if="service_request.state == 'in_progress'">
+                                    <a t-attf-href="/my/provider-service/#{service_request.id}/update_status?new_status=completed" 
+                                       class="btn btn-success mb-2 w-100">Mark as Completed</a>
+                                    <p class="text-muted small">Click when the service is fully completed.</p>
+                                </t>
+                                
+                                <t t-if="service_request.state == 'completed'">
+                                    <div class="alert alert-success">
+                                        <i class="fa fa-check-circle me-2"/>This service has been completed.
+                                    </div>
+                                </t>
+                                
+                                <t t-if="service_request.state not in ('scheduled', 'in_progress', 'completed')">
+                                    <div class="alert alert-info">
+                                        <i class="fa fa-info-circle me-2"/>This service is not ready for action yet.
+                                    </div>
+                                </t>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h5>Contact Customer</h5>
+                                <p><strong>Name:</strong> <span t-esc="service_request.partner_id.name"/></p>
+                                <p t-if="service_request.partner_id.phone"><strong>Phone:</strong> <a t-attf-href="tel:#{service_request.partner_id.phone}" t-esc="service_request.partner_id.phone"/></p>
+                                <p t-if="service_request.partner_id.email"><strong>Email:</strong> <a t-attf-href="mailto:#{service_request.partner_id.email}" t-esc="service_request.partner_id.email"/></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">Service Status</h4>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-calendar-alt me-2 text-warning"/>
+                                        Scheduled
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state in ('scheduled', 'in_progress', 'completed') and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state in ('scheduled', 'in_progress', 'completed')" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-cogs me-2 text-success"/>
+                                        In Progress
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state in ('in_progress', 'completed') and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state in ('in_progress', 'completed')" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fa fa-flag-checkered me-2 text-success"/>
+                                        Completed
+                                    </div>
+                                    <span t-attf-class="badge #{service_request.state == 'completed' and 'bg-success' or 'bg-secondary'}">
+                                        <i t-if="service_request.state == 'completed'" class="fa fa-check"/>
+                                        <i t-else="" class="fa fa-clock"/>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo> 

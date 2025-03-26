@@ -65,4 +65,144 @@
         <field name="perm_create" eval="True" />
         <field name="perm_unlink" eval="True" />
     </record>
+    
+    <!-- Service Request Access Rules -->
+    <record id="rule_service_request_customer_access" model="ir.rule">
+        <field name="name">Service Request: Customers see only their requests</field>
+        <field name="model_id" ref="model_auto_voyage_service_request" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_service_request_provider_access" model="ir.rule">
+        <field name="name">Service Request: Providers see assigned requests</field>
+        <field name="model_id" ref="model_auto_voyage_service_request" />
+        <field name="domain_force">['|', ('partner_id', '=', user.partner_id.id), 
+                                     ('provider_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_service_request_manager_access" model="ir.rule">
+        <field name="name">Service Request: Managers see all requests</field>
+        <field name="model_id" ref="model_auto_voyage_service_request" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
+    
+    <!-- Contract Access Rules -->
+    <record id="rule_contract_customer_access" model="ir.rule">
+        <field name="name">Contract: Customers see only their contracts</field>
+        <field name="model_id" ref="model_auto_voyage_contract" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_contract_provider_access" model="ir.rule">
+        <field name="name">Contract: Providers see assigned contracts</field>
+        <field name="model_id" ref="model_auto_voyage_contract" />
+        <field name="domain_force">['|', ('partner_id', '=', user.partner_id.id), 
+                                     ('provider_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_contract_manager_access" model="ir.rule">
+        <field name="name">Contract: Managers see all contracts</field>
+        <field name="model_id" ref="model_auto_voyage_contract" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
+    
+    <!-- Rating Access Rules -->
+    <record id="rule_rating_customer_access" model="ir.rule">
+        <field name="name">Rating: Customers see only their ratings</field>
+        <field name="model_id" ref="model_auto_voyage_rating" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_rating_provider_access" model="ir.rule">
+        <field name="name">Rating: Providers see their received ratings</field>
+        <field name="model_id" ref="model_auto_voyage_rating" />
+        <field name="domain_force">['|', ('partner_id', '=', user.partner_id.id), 
+                                     ('provider_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_rating_manager_access" model="ir.rule">
+        <field name="name">Rating: Managers see all ratings</field>
+        <field name="model_id" ref="model_auto_voyage_rating" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
+    
+    <!-- Discussion Access Rules -->
+    <record id="rule_discussion_customer_access" model="ir.rule">
+        <field name="name">Discussion: Customers see only their discussions</field>
+        <field name="model_id" ref="model_auto_voyage_discussion" />
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_discussion_provider_access" model="ir.rule">
+        <field name="name">Discussion: Providers see related discussions</field>
+        <field name="model_id" ref="model_auto_voyage_discussion" />
+        <field name="domain_force">['|', ('partner_id', '=', user.partner_id.id), 
+                                     ('provider_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_customer'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+    <record id="rule_discussion_manager_access" model="ir.rule">
+        <field name="name">Discussion: Managers see all discussions</field>
+        <field name="model_id" ref="model_auto_voyage_discussion" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_auto_voyage_manager'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
 </odoo> 

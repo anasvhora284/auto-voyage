@@ -5,17 +5,21 @@ from odoo import models, fields, api, _
 class ServiceProvider(models.Model):
     _name = 'auto.voyage.service.provider'
     _description = 'Service Provider'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'website.published.mixin']
     _rec_name = 'partner_id'
 
     partner_id = fields.Many2one('res.partner', string='Provider', required=True, tracking=True)
     code = fields.Char(string='Provider Code', required=True, tracking=True)
+    image = fields.Binary(string='Provider Image', attachment=True, help="Provider image displayed on the website")
     expertise_level = fields.Selection([
         ('basic', 'Basic'),
         ('intermediate', 'Intermediate'),
         ('advanced', 'Advanced'),
         ('specialist', 'Specialist')
     ], string='Expertise Level', required=True, default='basic', tracking=True)
+    
+    # Override name field for website.published.mixin
+    name = fields.Char(related='partner_id.name', string='Name', readonly=True, store=True)
     
     service_ids = fields.Many2many('auto.voyage.service', string='Services Offered')
     

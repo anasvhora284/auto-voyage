@@ -15,7 +15,7 @@ class Discussion(models.Model):
     service_id = fields.Many2one('auto.voyage.service.request', string='Service Request',
                                        tracking=True)
     vehicle_id = fields.Many2one('auto.voyage.vehicle', string='Vehicle',
-                                related='service_id.vehicle_id', store=True)
+                                related='service_id.vehicle_id', store=True, ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string='Customer',
                                 related='service_id.partner_id', store=True)
     provider_id = fields.Many2one('auto.voyage.service.provider', string='Service Provider',

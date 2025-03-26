@@ -41,12 +41,14 @@
                             <field name="category" />
                             <field name="duration" />
                             <field name="price" />
+                            <field name="icon" />
                         </group>
                         <group>
                             <field name="requires_appointment" />
                             <field name="requires_inspection" />
                             <field name="required_expertise" />
                             <field name="sequence" />
+                            <field name="currency_id" options="{'no_create': True, 'no_open': True}" />
                         </group>
                     </group>
                     <notebook>
@@ -100,8 +102,10 @@
                 <field name="category" />
                 <field name="price" />
                 <field name="duration" />
+                <field name="icon" />
+                <field name="currency_id" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">
@@ -119,7 +123,7 @@ Hours </span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <strong>
-                                            <field name="price" widget="monetary" />
+                                            <field name="price" widget="monetary" options="{'currency_field': 'currency_id'}" />
                                         </strong>
                                     </div>
                                 </div>
