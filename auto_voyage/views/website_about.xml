@@ -134,31 +134,31 @@
                         </div>
                         <div class="row g-4">
                             <div class="col-md-4">
-                                <div class="card h-100 border-0 shadow-sm">
+                                <div class="card feature-card h-100 border-0 shadow-sm">
                                     <div class="card-body text-center">
                                         <img src="/auto_voyage/static/src/img/default_avatar.png" class="rounded-circle mb-3" width="120" height="120" alt="CEO"/>
                                         <h3 class="h5">John Doe</h3>
-                                        <p class="text-muted">CEO &amp; Founder</p>
+                                        <span class="badge bg-primary text-white">CEO &amp; Founder</span>
                                         <p>With over 15 years of experience in the automotive industry.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card h-100 border-0 shadow-sm">
+                                <div class="card feature-card h-100 border-0 shadow-sm">
                                     <div class="card-body text-center">
                                         <img src="/auto_voyage/static/src/img/default_provider.png" class="rounded-circle mb-3" width="120" height="120" alt="CTO"/>
                                         <h3 class="h5">Jane Smith</h3>
-                                        <p class="text-muted">Chief Technology Officer</p>
+                                        <span class="badge bg-primary text-white">Chief Technology Officer</span>
                                         <p>Leading our technical innovation and digital transformation.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card h-100 border-0 shadow-sm">
+                                <div class="card feature-card h-100 border-0 shadow-sm">
                                     <div class="card-body text-center">
                                         <img src="/auto_voyage/static/src/img/default_avatar.png" class="rounded-circle mb-3" width="120" height="120" alt="COO"/>
                                         <h3 class="h5">Mike Johnson</h3>
-                                        <p class="text-muted">Chief Operations Officer</p>
+                                        <span class="badge bg-primary text-white">Chief Operations Officer</span>
                                         <p>Ensuring smooth operations and service delivery.</p>
                                     </div>
                                 </div>

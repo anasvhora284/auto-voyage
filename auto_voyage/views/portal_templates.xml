@@ -1,33 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Add menu items to portal -->
-    <template id="portal_my_home_menu_auto_voyage" name="Portal Menu Auto Voyage" inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <li t-if="page_name == 'vehicle' or page_name == 'vehicles'" t-attf-class="breadcrumb-item #{'active ' if not vehicle else ''}">
-                <a t-if="vehicle" t-attf-href="/my/vehicles?{{ keep_query() }}">Vehicles</a>
-                <t t-else="">Vehicles</t>
-            </li>
-            <li t-if="vehicle" class="breadcrumb-item active">
-                <t t-esc="vehicle.name"/>
-            </li>
-            <li t-if="page_name == 'service_request' or page_name == 'service_requests'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
-                <a t-if="service_request" t-attf-href="/my/service-requests?{{ keep_query() }}">Service Requests</a>
-                <t t-else="">Service Requests</t>
-            </li>
-            <li t-if="service_request" class="breadcrumb-item active">
-                <t t-esc="service_request.name"/>
-            </li>
-            <li t-if="page_name == 'provider_service'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
-                <a t-if="service_request" t-attf-href="/my/provider-services?{{ keep_query() }}">My Services</a>
-                <t t-else="">My Services</t>
-            </li>
-            <li t-if="page_name == 'provider_service' and service_request" class="breadcrumb-item active">
-                <t t-esc="service_request.name"/>
-            </li>
-        </xpath>
-    </template>
-
     <template id="portal_my_home_auto_voyage" name="Portal My Home Auto Voyage" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[@id='portal_common_category']" position="after">
+            <h3 class="auto-voyage-my-section-heading">Auto Voyage</h3>
+        </xpath>
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-if="vehicle_count" t-call="portal.portal_docs_entry">
                 <t t-set="title">Vehicles</t>
@@ -41,7 +17,7 @@
                 <t t-set="count" t-value="service_request_count"/>
                 <t t-set="placeholder_count" t-value="'service_request_count'"/>
             </t>
-            <t t-set="provider" t-value="request.env['auto.voyage.service.provider'].sudo().search([('partner_id', '=', user.partner_id.id)], limit=1)"/>
+            <t t-set="provider" t-value="request.env['auto.voyage.service.provider'].sudo().search([('partner_id', '=', request.env.user.partner_id.id)], limit=1)"/>
             <t t-if="provider">
                 <div class="col-12 col-sm-6 col-md-4 mt-3">
                     <div class="card border-primary h-100">

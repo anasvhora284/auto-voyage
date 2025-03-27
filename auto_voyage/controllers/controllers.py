@@ -599,6 +599,7 @@ class AutoVoyageWebsite(http.Controller):
         """Services page"""
         # Get all services
         services = request.env['auto.voyage.service'].search([])
+        currency_id = request.env['res.currency'].search([], limit=1)
         
         # Group services by category
         services_by_category = {}
@@ -609,6 +610,7 @@ class AutoVoyageWebsite(http.Controller):
         
         return request.render("auto_voyage.services_page", {
             'services': services,
+            'currency_id': currency_id,
             'services_by_category': services_by_category,
             'categories': SERVICE_CATEGORIES
         })
