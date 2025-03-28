@@ -638,11 +638,17 @@ class AutoVoyageWebsite(http.Controller):
     @http.route('/booking/submit', type='http', auth="user", website=True, methods=['POST'])
     def booking_submit(self, **post):
         """Handle booking form submission"""
+        # Convert the scheduled_date from ISO format to the expected format
+        scheduled_date = post.get('scheduled_date')
+        if scheduled_date:
+            # Convert the ISO format to the required format
+            scheduled_date = scheduled_date.replace("T", " ")  # Replace 'T' with a space
+
         service_request = request.env['auto.voyage.service.request'].sudo().create({
             'partner_id': request.env.user.partner_id.id,
             'vehicle_id': int(post.get('vehicle_id')),
             'service_id': int(post.get('service_id')),
-            'scheduled_date': post.get('scheduled_date'),
+            'scheduled_date': scheduled_date,  # Use the converted date
             'description': post.get('description'),
             'state': 'draft',
         })
