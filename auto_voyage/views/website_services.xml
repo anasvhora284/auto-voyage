@@ -44,7 +44,7 @@
                                             <p><t t-esc="service.description"/></p>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="price"><t t-esc="'%s %s' % (service.price, currency_id.symbol)"/></span>
-                                                <span class="duration"><i class="fa fa-clock"></i> <t t-esc="service.duration"/> mins</span>
+                                                <span class="duration"><i class="fa fa-clock"></i> <t t-esc="service.duration"/> Hrs</span>
                                             </div>
                                         </div>
                                         <a t-att-href="'/booking?service=%s' % service.id" class="btn btn-primary mt-3">Book Now</a>

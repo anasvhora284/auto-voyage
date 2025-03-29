@@ -86,10 +86,12 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
         'web.assets_frontend': [
             # CSS files
             'auto_voyage/static/src/css/portal.css',
+            'auto_voyage/static/src/css/rating_stars.css',
             
             # JavaScript files 
             'auto_voyage/static/src/js/portal.js',
             'auto_voyage/static/src/js/website.js',
+            'auto_voyage/static/src/js/rating_stars.js',
             
             # XML templates
             'auto_voyage/static/src/xml/provider_card.xml',

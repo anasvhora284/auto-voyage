@@ -367,7 +367,7 @@
                             </div>
                             <div class="card-body">
                                 <!-- Check if user has already rated -->
-                                <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', user.partner_id.id), ('service_request_id', '=', service_request.id)], limit=1)"/>
+                                <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', request.env.user.partner_id.id), ('service_id', '=', service_request.id)], limit=1)"/>
                                 
                                 <t t-if="existing_rating">
                                     <div class="alert alert-info">
@@ -377,7 +377,7 @@
                                                 <span class="text-muted">Overall Rating:</span>
                                                 <div class="ms-2 d-inline-block">
                                                     <t t-foreach="range(1, 6)" t-as="star">
-                                                        <i t-attf-class="fa fa-star#{star &lt;= existing_rating.overall_rating and '' or '-o'}" style="color: #FFD700;"></i>
+                                                        <i t-attf-class="fa fa-star #{star &lt;= existing_rating.overall_rating and '' or '-o'}" style="color: #FFD700;"></i>
                                                     </t>
                                                 </div>
                                             </div>
@@ -392,34 +392,25 @@
                                 <t t-else="">
                                     <form action="/my/service-request/rate" method="post">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                        <input type="hidden" name="service_request_id" t-att-value="service_request.id"/>
+                                        <input type="hidden" name="service_id" t-att-value="service_request.id"/>
                                         
-                                        <div class="mb-3">
-                                            <label class="form-label">Overall Rating</label>
-                                            <div class="rating-stars">
-                                                <t t-foreach="range(1, 6)" t-as="star">
-                                                    <input type="radio" name="overall_rating" t-att-id="'star' + str(star)" t-att-value="star" t-att-checked="star == 5"/>
-                                                    <label t-attf-for="star#{star}" t-attf-title="#{star} star#{star > 1 and 's' or ''}">
-                                                        <i class="fa fa-star"></i>
-                                                    </label>
-                                                </t>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Service Quality</label>
+                                                <div class="d-flex align-items-center rating-stars-container">
+                                                    <div class="rating-stars me-3">
+                                                        <t t-foreach="range(1, 6)" t-as="star">
+                                                            <input type="radio" name="service_quality" t-att-id="'quality_' + str(star)" t-att-value="star" t-att-checked="star == 5" class="d-none"/>
+                                                            <label t-attf-for="quality_#{star}">
+                                                                <i class="fa fa-star" style="font-size: 24px;"></i>
+                                                            </label>
+                                                        </t>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label">Quality</label>
-                                                <select name="quality_rating" class="form-select">
-                                                    <option value="5" selected="selected">Excellent (5)</option>
-                                                    <option value="4">Very Good (4)</option>
-                                                    <option value="3">Good (3)</option>
-                                                    <option value="2">Fair (2)</option>
-                                                    <option value="1">Poor (1)</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-6">
                                                 <label class="form-label">Timeliness</label>
-                                                <select name="timeliness_rating" class="form-select">
+                                                <select name="timeliness" class="form-select">
                                                     <option value="5" selected="selected">Excellent (5)</option>
                                                     <option value="4">Very Good (4)</option>
                                                     <option value="3">Good (3)</option>
@@ -427,9 +418,22 @@
                                                     <option value="1">Poor (1)</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label">Value</label>
-                                                <select name="value_rating" class="form-select">
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Communication</label>
+                                                <select name="communication" class="form-select">
+                                                    <option value="5" selected="selected">Excellent (5)</option>
+                                                    <option value="4">Very Good (4)</option>
+                                                    <option value="3">Good (3)</option>
+                                                    <option value="2">Fair (2)</option>
+                                                    <option value="1">Poor (1)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Value for Money</label>
+                                                <select name="value_for_money" class="form-select">
                                                     <option value="5" selected="selected">Excellent (5)</option>
                                                     <option value="4">Very Good (4)</option>
                                                     <option value="3">Good (3)</option>
@@ -440,8 +444,8 @@
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="comment" class="form-label">Your Comments</label>
-                                            <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Share your experience with this service..."></textarea>
+                                            <label for="feedback" class="form-label">Your Comments</label>
+                                            <textarea name="feedback" id="feedback" class="form-control" rows="4" placeholder="Share your experience with this service..."></textarea>
                                         </div>
                                         
                                         <div class="d-grid">
@@ -498,7 +502,7 @@
             </t>
             
             <div class="mb-4">
-                <a href="/my/vehicle/new" class="btn btn-primary">
+                <a href="/my/vehicle/new" class="btn btn-outline-primary">
                     <i class="fa fa-plus"></i> Add New Vehicle
                 </a>
             </div>
@@ -545,10 +549,10 @@
                                 </div>
                                 <div class="card-footer bg-transparent">
                                     <div class="d-flex justify-content-between">
-                                        <a t-att-href="'/my/vehicle/%s' % vehicle.id" class="btn btn-sm btn-outline-primary">
+                                        <a t-att-href="'/my/vehicle/%s' % vehicle.id" class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-between">
                                             View Details
                                         </a>
-                                        <a t-att-href="'/booking?vehicle_id=%s' % vehicle.id" class="btn btn-sm btn-primary">
+                                        <a t-att-href="'/booking?vehicle_id=%s' % vehicle.id" class="btn btn-sm btn-outline-primary px-2 py-1">
                                             Book Service
                                         </a>
                                     </div>

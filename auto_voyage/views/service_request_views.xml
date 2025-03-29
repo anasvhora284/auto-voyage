@@ -42,7 +42,7 @@
                             <field name="partner_id" />
                             <field name="vehicle_id" domain="[('partner_id', '=', partner_id)]" />
                             <field name="service_id" />
-                            <field name="provider_id" />
+                            <field name="provider_id" required="1"/>
                         </group>
                         <group>
                             <field name="scheduled_date" />

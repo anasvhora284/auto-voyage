@@ -1,0 +1,39 @@
+/* Star Rating System CSS */
+.rating-stars {
+    display: inline-flex;
+    flex-direction: row-reverse; /* Reverse the order for proper hover effect */
+}
+
+.rating-stars label {
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.rating-stars label i {
+    color: #ccc;
+    transition: color 0.2s ease;
+}
+
+/* Fix for Firefox */
+.rating-stars input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Hover effects - hover over a star will light up that star and all stars before it */
+.rating-stars:hover label i {
+    color: #ccc;
+}
+
+.rating-stars label:hover i,
+.rating-stars label:hover ~ label i {
+    color: #FFD700 !important;
+}
+
+/* Keep selected stars highlighted */
+.rating-stars input:checked + label i,
+.rating-stars input:checked + label ~ label i {
+    color: #FFD700;
+}
