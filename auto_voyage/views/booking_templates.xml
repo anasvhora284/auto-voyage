@@ -77,13 +77,7 @@
                                                 <label for="scheduled_date" class="form-label">Preferred Date and Time<span class="text-danger">*</span></label>
                                                 <input type="datetime-local" class="form-control" name="scheduled_date" id="scheduled_date" required="required"/>
                                                 <div class="form-text">Please select your preferred date and time for the service.</div>
-                                                <script type="text/javascript">
-                                                    document.addEventListener('DOMContentLoaded', function() {
-                                                        var today = new Date();
-                                                        var formattedDate = today.toISOString().slice(0, 16);
-                                                        document.getElementById('scheduled_date').setAttribute('min', formattedDate);
-                                                    });
-                                                </script>
+                                                <!-- Date validation is now handled in booking.js -->
                                             </div>
                                             
                                             <div class="mb-3">

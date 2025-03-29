@@ -24,10 +24,16 @@ const AutoVoyageBooking = publicWidget.Widget.extend({
      * @private
      */
     _initializeForm: function () {
-        // Set minimum date to today
+        // Set minimum date to today (format YYYY-MM-DDThh:mm)
         var today = new Date();
-        var formattedDate =
-            today.toISOString().split("T")[0] + "T" + today.toTimeString().split(" ")[0];
+        
+        // Round minutes to the nearest 5 minutes to avoid odd time values
+        var minutes = Math.ceil(today.getMinutes() / 5) * 5;
+        today.setMinutes(minutes);
+        today.setSeconds(0);
+        today.setMilliseconds(0);
+        
+        var formattedDate = today.toISOString().slice(0, 16);
         this.$("#scheduled_date").attr("min", formattedDate);
 
         // Initialize service details section if a service is already selected
@@ -78,16 +84,33 @@ const AutoVoyageBooking = publicWidget.Widget.extend({
      * @private
      */
     _validateDate: function () {
-        var selectedDate = new Date(this.$("#scheduled_date").val());
+        // Get the selected date and current date
+        var selectedDateStr = this.$("#scheduled_date").val();
+        
+        // If no date is selected, don't validate
+        if (!selectedDateStr) {
+            return true;
+        }
+        
+        var selectedDate = new Date(selectedDateStr);
         var now = new Date();
-
+        
         // Remove any existing warnings
         this.$("#date-warning").remove();
 
-        // Check if date is valid
-        if (selectedDate < now) {
+        // Set seconds and milliseconds to 0 for both dates to avoid comparison issues
+        selectedDate.setSeconds(0);
+        selectedDate.setMilliseconds(0);
+        
+        now.setSeconds(0);
+        now.setMilliseconds(0);
+        
+        // Add 5 minutes to current time for buffer
+        var bufferTime = new Date(now.getTime() + 5 * 60000);
+        
+        if (selectedDate < bufferTime) {
             this.$(
-                '<div id="date-warning" class="alert alert-warning mt-2">Please select a future date and time.</div>'
+                '<div id="date-warning" class="alert alert-warning mt-2">Please select a future date and time (at least 5 minutes from now).</div>'
             ).insertAfter("#scheduled_date");
             return false;
         }
