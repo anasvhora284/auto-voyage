@@ -56,7 +56,7 @@
     </template>
 
     <!-- Vehicles Portal Templates -->
-    <template id="portal_my_vehicles_list" name="My Vehicles">
+    <!-- <template id="portal_my_vehicles_list" name="My Vehicles">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
@@ -123,9 +123,9 @@
                 </div>
             </t>
         </t>
-    </template>
+    </template> -->
 
-    <template id="portal_my_vehicle_detail_view" name="My Vehicle Detail">
+    <!-- <template id="portal_my_vehicle_detail_view" name="My Vehicle Detail">
         <t t-call="portal.portal_layout">
             <t t-set="o_portal_fullwidth_alert" groups="auto_voyage.group_auto_voyage_manager">
                 <t t-call="portal.portal_back_in_edit_mode">
@@ -194,10 +194,10 @@
                 </div>
             </div>
         </t>
-    </template>
+    </template> -->
 
     <!-- Service Requests Portal Templates -->
-    <template id="portal_my_service_requests_list" name="My Service Requests">
+    <!-- <template id="portal_my_service_requests_list" name="My Service Requests">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
@@ -254,7 +254,7 @@
                 </div>
             </t>
         </t>
-    </template>
+    </template> -->
 
     <template id="portal_my_service_request_detail_view" name="Service Request Detail">
         <t t-call="portal.portal_layout">
@@ -378,13 +378,11 @@
                     </div>
                     
                     <t t-if="service_request.state == 'completed'">
-                        <!-- Add rating section if service is completed -->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <h5 class="mb-0">Rate this Service</h5>
                             </div>
                             <div class="card-body">
-                                <!-- Check if user has already rated -->
                                 <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', request.env.user.partner_id.id), ('service_id', '=', service_request.id)], limit=1)"/>
                                 
                                 <t t-if="existing_rating">
@@ -401,14 +399,14 @@
                                             </div>
                                             <div>
                                                 <span class="text-muted">Your Comment:</span>
-                                                <p class="mt-2 border p-2 rounded bg-light" t-esc="existing_rating.comment or 'No comment provided.'"/>
+                                                <p class="mt-2 border p-2 rounded bg-light" t-esc="existing_rating.feedback or 'No comment provided.'"/>
                                             </div>
                                         </div>
                                     </div>
                                 </t>
                                 
                                 <t t-else="">
-                                    <form action="/my/service-request/rate" method="post">
+                                    <form action="/my/ratings/submit" method="post">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <input type="hidden" name="service_id" t-att-value="service_request.id"/>
                                         
@@ -1141,4 +1139,26 @@
             </t>
         </t>
     </template>
-</odoo> 
+
+    <!-- Service Requests Submenu -->
+    <template id="portal_my_home_menu_service_requests" name="Portal layout : Service Request entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'service_request'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
+                <a t-if="service_request" t-attf-href="/my/service-request?{{ keep_query() }}">Service Requests</a>
+                <t t-else="">Service Requests</t>
+            </li>
+            <li t-if="service_request" class="breadcrumb-item active">
+                <t t-out="service_request.name" t-if="service_request.name != '/'"/>
+                <t t-else=""><em>New Service Request</em></t>
+            </li>
+            <li t-if="page_name == 'vehicle'" t-attf-class="breadcrumb-item #{'active ' if not vehicle else ''}">
+                <a t-if="vehicle" t-attf-href="/my/vehicles?{{ keep_query() }}">Vehicles</a>
+                <t t-else="">Vehicles</t>
+            </li>
+            <li t-if="vehicle" class="breadcrumb-item active">
+                <t t-out="vehicle.name" t-if="vehicle.name != '/'"/>
+                <t t-else=""><em>New Vehicle</em></t>
+            </li>
+        </xpath>
+    </template>
+</odoo>

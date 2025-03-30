@@ -51,12 +51,12 @@
                         <page string="Rating Details" name="rating_details">
                             <group>
                                 <group>
-                                    <field name="service_quality" widget="priority"/>
-                                    <field name="timeliness" widget="priority"/>
+                                    <field name="service_quality" widget="rating"/>
+                                    <field name="timeliness" widget="rating"/>
                                 </group>
                                 <group>
-                                    <field name="communication" widget="priority"/>
-                                    <field name="value_for_money" widget="priority"/>
+                                    <field name="communication" widget="rating"/>
+                                    <field name="value_for_money" widget="rating"/>
                                 </group>
                             </group>
                         </page>

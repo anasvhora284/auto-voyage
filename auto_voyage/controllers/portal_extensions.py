@@ -217,26 +217,41 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         if discussion_sudo.state not in ['new', 'in_progress', 'waiting']:
             return request.redirect('/my/discussions/%s' % discussion_id)
             
+        # Determine the author - if user is customer, use customer partner_id
+        # If user is internal, use the service provider's partner_id
+        author_id = request.env.user.partner_id.id
+        
         # Create message
         message_values = {
             'body': message,
             'message_type': 'comment',
             'subtype_xmlid': 'mail.mt_comment',
+            'author_id': author_id,
         }
         
-        # Post the message
-        discussion_sudo.with_context(mail_create_nosubscribe=True).message_post(**message_values)
-        
         # Handle attachment if any
-        if attachment:
-            IrAttachment = request.env['ir.attachment'].sudo()
-            attachment_value = {
-                'name': attachment.filename,
-                'datas': base64.b64encode(attachment.read()),
-                'res_model': 'auto.voyage.discussion',
-                'res_id': discussion_id,
-            }
-            IrAttachment.create(attachment_value)
+        attachment_ids = []
+        if attachment and attachment.filename:
+            try:
+                # Read the file content
+                file_content = attachment.read()
+                if file_content:
+                    # Create the attachment
+                    attachment_data = {
+                        'name': attachment.filename,
+                        'datas': base64.b64encode(file_content),
+                        'res_model': 'auto.voyage.discussion',
+                        'res_id': discussion_id,
+                    }
+                    new_attachment = request.env['ir.attachment'].sudo().create(attachment_data)
+                    attachment_ids.append(new_attachment.id)
+                    message_values['attachment_ids'] = [(6, 0, attachment_ids)]
+            except Exception as e:
+                # Log the error but don't fail the whole operation
+                _logger.error(f"Error processing attachment: {str(e)}")
+        
+        # Post the message with attachment if any
+        discussion_sudo.with_context(mail_create_nosubscribe=True).message_post(**message_values)
             
         return request.redirect('/my/discussions/%s' % discussion_id)
     
@@ -334,51 +349,91 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
             
         values = {
             'rating': rating_sudo,
-            'page_name': 'rating',
+            'page_name': 'ratings',
             'can_edit': can_edit,
         }
         
         return request.render("auto_voyage.portal_rating_page", values)
+    
+    @http.route(['/my/ratings/<int:rating_id>/edit'], type='http', auth="user", website=True)
+    def portal_rating_edit(self, rating_id, **kw):
+        print(f"Hello 123 <----------------------{rating_id}----------------------->")
+        print(f"Hello 123 <----------------------{request.env.user}----------------------->")
+        print(f"Hello 123 <----------------------{request.env.user.partner_id}----------------------->")
+        """Display rating edit form"""
+        print("Before try")
+        try:
+            print("Inside try")
+            rating_sudo = self._document_check_access('auto.voyage.rating', rating_id)
+            print(f"Hello 123 <----------------------{rating_sudo}----------------------->")
+            if rating_sudo.partner_id != request.env.user.partner_id:
+                print("User doesn't match")
+                return request.redirect('/my/ratings')
+        except (AccessError, MissingError):
+            print("Caught exception")
+            return request.redirect('/my/ratings')
+            
+        print("After try")
+        values = {
+            'rating': rating_sudo,
+            'page_name': 'rating_edit',
+            'service_quality': rating_sudo.service_quality,
+            'timeliness': rating_sudo.timeliness,
+            'communication': rating_sudo.communication,
+            'value_for_money': rating_sudo.value_for_money,
+            'feedback': rating_sudo.feedback,
+        }
         
-    @http.route(['/my/ratings/submit'], type='http', auth="user", website=True, methods=['POST'])
+        print("Before render")
+        return request.render("auto_voyage.portal_rating_edit", values)
+        print("After render")
+    
+    @http.route(['/my/ratings/submit'], type='http', auth="user", website=True, methods=['POST'], csrf=True)
     def portal_rating_submit(self, **kw):
         """Submit or update a rating"""
-        rating_id = int(kw.get('rating_id', 0))
-        service_id = int(kw.get('service_id', 0))
+        rating_id = int(kw.get('rating_id', 0) or 0)
+        service_id = int(kw.get('service_id', 0) or 0)
         
         # Validate required fields
         required_fields = ['service_quality', 'timeliness', 'communication', 'value_for_money']
-        values = {field: kw.get(field) for field in required_fields if kw.get(field)}
+        values = {}
+        for field in required_fields:
+            if field in kw:
+                try:
+                    values[field] = float(kw.get(field))
+                except (ValueError, TypeError):
+                    values[field] = 0.0
+        
         values['feedback'] = kw.get('feedback', '')
         
         if not all(field in values for field in required_fields):
             return request.redirect('/my/service-requests/%s' % service_id)
         
-        # Convert rating values to integers
-        for field in required_fields:
-            values[field] = values.get(field, '3')
+        Rating = request.env['auto.voyage.rating'].sudo()
         
-        Rating = request.env['auto.voyage.rating']
-        
-        if rating_id:
-            # Update existing rating
-            try:
+        try:
+            if rating_id:
+                # Update existing rating
                 rating_sudo = self._document_check_access('auto.voyage.rating', rating_id)
                 # Only allow editing if not published and within 7 days
                 if rating_sudo.state != 'published' and (fields.Datetime.now() - rating_sudo.create_date).days <= 7:
                     rating_sudo.write(values)
                     if rating_sudo.state == 'draft':
                         rating_sudo.action_submit()
-            except (AccessError, MissingError):
-                return request.redirect('/my/ratings')
-        elif service_id:
-            # Create new rating
-            service_sudo = request.env['auto.voyage.service.request'].sudo().browse(service_id)
-            if service_sudo.exists() and service_sudo.partner_id.id == request.env.user.partner_id.id:
-                values.update({
-                    'service_id': service_id,
-                    'state': 'submitted'
-                })
-                Rating.sudo().create(values)
+                return request.redirect('/my/ratings/%s' % rating_id)
+            elif service_id:
+                # Create new rating
+                service_sudo = request.env['auto.voyage.service.request'].sudo().browse(service_id)
+                if service_sudo.exists() and service_sudo.partner_id.id == request.env.user.partner_id.id:
+                    values.update({
+                        'service_id': service_id,
+                        'rating_date': fields.Date.today(),
+                        'state': 'submitted'
+                    })
+                    new_rating = Rating.create(values)
+                    return request.redirect('/my/ratings/%s' % new_rating.id)
+        except Exception as e:
+            _logger.error("Error in rating submission: %s", str(e))
+            return request.redirect('/my/ratings')
         
         return request.redirect('/my/ratings')

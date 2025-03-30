@@ -79,20 +79,21 @@
                                         <field name="provider_id"/>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="o_kanban_card_footer">
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-6">
-                                        <small>
-                                            <i class="fa fa-clock-o" title="Scheduled Date"/>
-                                            <field name="scheduled_date"/>
-                                        </small>
+                                        <strong>Amount:</strong>
                                     </div>
-                                    <div class="col-6 text-right">
-                                        <strong>
-                                            <field name="amount" widget="monetary"/>
-                                            <field name="currency_id" invisible="1"/>
-                                        </strong>
+                                    <div class="col-6">
+                                        <field name="amount" widget="monetary"/>
+                                        <field name="currency_id" invisible="1"/>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4">
+                                        <strong>Date <i class="fa fa-clock-o" title="Scheduled Date"/> :</strong>
+                                    </div>
+                                    <div class="col-8 text-end">
+                                        <field name="scheduled_date"/>
                                     </div>
                                 </div>
                             </div>

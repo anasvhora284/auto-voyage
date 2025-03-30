@@ -179,7 +179,7 @@
                         
                         <!-- Feedback -->
                         <div class="mt-4" t-if="rating.feedback">
-                            <h6>Feedback</h6>
+                            <h6>Feedbacka</h6>
                             <div class="border p-3 rounded bg-light">
                                 <p t-field="rating.feedback"/>
                             </div>
@@ -187,7 +187,7 @@
                         
                         <!-- Edit button if it's recent -->
                         <div class="mt-4" t-if="can_edit">
-                            <a t-attf-href="/my/service-requests/#{rating.service_id.id}?edit_rating=1" class="btn btn-primary">
+                            <a t-attf-href="/my/ratings/#{rating.service_id.id}/edit123" class="btn btn-primary">
                                 <i class="fa fa-edit"></i> Edit Rating
                             </a>
                         </div>
@@ -195,5 +195,94 @@
                 </div>
             </div>
         </t>
+    </template>
+
+    <!-- Rating Edit Template -->
+    <template id="portal_rating_edit" name="Edit Rating">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Edit Rating for <span t-field="rating.service_id.name"/></h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/my/ratings/submit" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="rating_id" t-att-value="rating.id"/>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Service Quality</label>
+                                    <select name="service_quality" class="form-select" required="required">
+                                        <t t-foreach="range(1, 6)" t-as="i">
+                                            <option t-att-value="i" t-att-selected="i == service_quality">
+                                                <t t-esc="i"/> - <t t-esc="['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][i-1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Timeliness</label>
+                                    <select name="timeliness" class="form-select" required="required">
+                                        <t t-foreach="range(1, 6)" t-as="i">
+                                            <option t-att-value="i" t-att-selected="i == timeliness">
+                                                <t t-esc="i"/> - <t t-esc="['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][i-1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Communication</label>
+                                    <select name="communication" class="form-select" required="required">
+                                        <t t-foreach="range(1, 6)" t-as="i">
+                                            <option t-att-value="i" t-att-selected="i == communication">
+                                                <t t-esc="i"/> - <t t-esc="['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][i-1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Value for Money</label>
+                                    <select name="value_for_money" class="form-select" required="required">
+                                        <t t-foreach="range(1, 6)" t-as="i">
+                                            <option t-att-value="i" t-att-selected="i == value_for_money">
+                                                <t t-esc="i"/> - <t t-esc="['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][i-1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Feedback</label>
+                                <textarea name="feedback" class="form-control" rows="4" t-esc="feedback"/>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a t-attf-href="/my/ratings/#{rating.id}" class="btn btn-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Update Rating</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Ratings Submenu -->
+    <template id="portal_my_home_menu_ratings" name="Portal layout : Rating entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'ratings'" t-attf-class="breadcrumb-item #{'active ' if not rating else ''}">
+                <a t-if="rating" t-attf-href="/my/ratings?{{ keep_query() }}">Ratings</a>
+                <t t-else="">Ratings</t>
+            </li>
+            <li t-if="rating" class="breadcrumb-item active">
+                <t t-out="rating.name" t-if="rating.name != '/'"/>
+                <t t-else=""><em>Draft Rating</em></t>
+            </li>
+        </xpath>
     </template>
 </odoo>

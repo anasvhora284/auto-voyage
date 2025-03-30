@@ -63,6 +63,56 @@ class Discussion(models.Model):
                 vals['name'] = _("New Discussion")
         return super().create(vals_list)
     
+    def _post_status_change_message(self, old_state, new_state):
+        """Post a message when the status changes with the service provider as author"""
+        if old_state == new_state:
+            return
+            
+        # Map states to readable names
+        state_names = {
+            'new': 'New',
+            'in_progress': 'In Progress',
+            'waiting': 'Waiting for Customer',
+            'resolved': 'Resolved',
+            'closed': 'Closed'
+        }
+        
+        # Create a meaningful message about the status change
+        message = f"<p>Status changed from <b>{state_names.get(old_state, old_state)}</b> to <b>{state_names.get(new_state, new_state)}</b></p>"
+        
+        # If moving to resolved, add a note about resolution
+        if new_state == 'resolved':
+            message += "<p>This discussion has been marked as resolved. If you have any further questions, please reply to this thread.</p>"
+        elif new_state == 'closed':
+            message += "<p>This discussion has been closed. Thank you for your participation.</p>"
+        
+        # Use the service provider's partner as the author if available
+        author_id = self.provider_id.partner_id.id if self.provider_id and self.provider_id.partner_id else self.env.user.partner_id.id
+        
+        # Post the message
+        self.with_context(mail_create_nosubscribe=True).message_post(
+            body=message,
+            message_type='comment',
+            subtype_xmlid='mail.mt_note',
+            author_id=author_id
+        )
+    
+    def write(self, vals):
+        """Override write to track status changes and post messages"""
+        for record in self:
+            # If state is changing, capture the old state
+            old_state = record.state if 'state' in vals else None
+            
+        # Call super to perform the write operation
+        result = super(Discussion, self).write(vals)
+        
+        # If state changed, post a message about it
+        if 'state' in vals:
+            for record in self:
+                record._post_status_change_message(old_state, record.state)
+                
+        return result
+    
     def action_in_progress(self):
         self.write({'state': 'in_progress'})
     

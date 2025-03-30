@@ -132,22 +132,18 @@
                                         <th>Name</th>
                                         <th>Phone</th>
                                         <th>Email</th>
-                                        <th>Rating</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <span t-field="doc.provider_id.name"/>
+                                            <span t-if="doc.provider_id" t-field="doc.provider_id.name" t-raw="doc.provider_id and doc.provider_id.name or 'N/A'"/>
                                         </td>
-                                        <td>
-                                            <span t-field="doc.provider_id.phone"/>
+                                        <td t-if="doc.provider_id.partner_id.phone">
+                                            <span t-field="doc.provider_id.partner_id.phone" t-raw="doc.provider_id and doc.provider_id.partner_id.phone or 'N/A'"/>
                                         </td>
-                                        <td>
-                                            <span t-field="doc.provider_id.email"/>
-                                        </td>
-                                        <td>
-                                            <span t-field="doc.provider_id.rating"/>
+                                        <td t-if="doc.provider_id.partner_id.email">
+                                            <span t-field="doc.provider_id.partner_id.email" t-raw="doc.provider_id and doc.provider_id.partner_id.email or 'N/A'"/>
                                         </td>
                                     </tr>
                                 </tbody>
