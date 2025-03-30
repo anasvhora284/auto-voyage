@@ -113,8 +113,12 @@
                                     <span t-field="doc.description"/>
                                 </p>
                                 <p>
-                                    <strong>Notes:</strong>
-                                    <span t-field="doc.notes"/>
+                                    <strong>Customer Notes:</strong>
+                                    <span t-field="doc.customer_notes"/>
+                                </p>
+                                <p t-if="doc.internal_notes">
+                                    <strong>Internal Notes:</strong>
+                                    <span t-field="doc.internal_notes"/>
                                 </p>
                             </div>
                         </div>

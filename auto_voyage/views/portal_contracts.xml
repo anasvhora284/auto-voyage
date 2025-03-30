@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Contracts Portal List Template -->
+    <template id="portal_my_contracts" name="My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Contracts</t>
+            </t>
+            <t t-if="not contracts">
+                <div class="alert alert-info" role="alert">
+                    There are currently no contracts for your account.
+                </div>
+            </t>
+            <t t-if="contracts">
+                <div class="table-responsive">
+                    <ul class="list-group o_portal_my_doc_list">
+                        <t t-foreach="contracts" t-as="contract">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a t-attf-href="/my/contracts/#{contract.id}">
+                                        <t t-esc="contract.name"/>
+                                    </a>
+                                    <div>
+                                        <strong>Service Provider:</strong> <t t-esc="contract.provider_id.name" /><br/>
+                                        <strong>Start Date:</strong> <t t-esc="contract.start_date" t-options="{'widget': 'date'}"/><br/>
+                                        <strong>End Date:</strong> <t t-esc="contract.end_date" t-options="{'widget': 'date'}"/><br/>
+                                        <strong>Status:</strong>
+                                        <t t-if="contract.state == 'draft'">
+                                            <span class="badge bg-secondary">Draft</span>
+                                        </t>
+                                        <t t-elif="contract.state == 'active'">
+                                            <span class="badge bg-success">Active</span>
+                                        </t>
+                                        <t t-elif="contract.state == 'expired'">
+                                            <span class="badge bg-warning">Expired</span>
+                                        </t>
+                                        <t t-elif="contract.state == 'cancelled'">
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        </t>
+                                    </div>
+                                </div>
+                                <a t-attf-href="/my/contracts/#{contract.id}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-eye"></i> View
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </div>
+                <div t-if="pager" class="o_portal_pager">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Contract Portal Detail Template -->
+    <template id="portal_contract_page" name="Contract Details">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="base.group_portal">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=auto.voyage.contract&amp;id=%s&amp;view_type=form' % (contract.id)"/>
+                </t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <small class="text-muted">Contract - </small><span t-field="contract.name"/>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <strong>Services:</strong>
+                                <t t-if="contract.service_ids">
+                                    <span t-foreach="contract.service_ids" t-as="service">
+                                        <span t-field="service.name"/>
+                                    </span>
+                                </t>
+                                <t t-else="">No services specified</t>
+                                <br/>
+                                <strong>Vehicle:</strong> <span t-field="contract.vehicle_id.name"/><br/>
+                                <strong>Customer:</strong> <span t-field="contract.partner_id.name"/><br/>
+                                <strong>Service Provider:</strong> <span t-field="contract.provider_id.name"/><br/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <strong>Start Date:</strong> <span t-field="contract.start_date"/><br/>
+                                <strong>End Date:</strong> <span t-field="contract.end_date"/><br/>
+                                <strong>Status:</strong> 
+                                <span t-attf-class="badge #{contract.state == 'draft' and 'bg-info' or contract.state == 'active' and 'bg-success' or contract.state == 'expired' and 'bg-warning' or contract.state == 'cancelled' and 'bg-danger' or 'bg-secondary'}">
+                                    <t t-out="contract.state.replace('_', ' ').title()"/>
+                                </span>
+                                <br/>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h6>Contract Terms</h6>
+                            <div class="border p-3 rounded">
+                                <span t-field="contract.terms_conditions"/>
+                            </div>
+                        </div>
+                        <div class="mt-4" t-if="contract.notes">
+                            <h6>Notes</h6>
+                            <div class="border p-3 rounded">
+                                <span t-field="contract.notes"/>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h6>Payment Information</h6>
+                            <div class="border p-3 rounded">
+                                <strong>Amount:</strong> <span t-field="contract.amount" t-options='{"widget": "monetary", "display_currency": contract.currency_id}'/><br/>
+                                <strong>Payment Terms:</strong> <span t-field="contract.payment_terms"/>
+                            </div>
+                        </div>
+                        <div class="mt-4" t-if="contract.state == 'draft'">
+                            <a t-attf-href="/my/contracts/#{contract.id}/accept" class="btn btn-primary">
+                                <i class="fa fa-check"></i> Accept Contract
+                            </a>
+                            <a t-attf-href="/my/contracts/#{contract.id}/reject" class="btn btn-danger ms-2">
+                                <i class="fa fa-times"></i> Reject Contract
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

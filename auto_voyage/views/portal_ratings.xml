@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ratings Portal List Template -->
+    <template id="portal_my_ratings" name="My Ratings">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Ratings</t>
+            </t>
+            <t t-if="not ratings">
+                <div class="alert alert-info" role="alert">
+                    There are currently no ratings for your account.
+                </div>
+            </t>
+            <t t-if="ratings">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover o_portal_my_doc_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Service Request</th>
+                                <th>Service Provider</th>
+                                <th>Date</th>
+                                <th>Overall Rating</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="ratings" t-as="rating">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/service-requests/#{rating.service_id.id}">
+                                            <t t-esc="rating.service_id.name"/>
+                                        </a>
+                                    </td>
+                                    <td><t t-esc="rating.provider_id.name"/></td>
+                                    <td><t t-esc="rating.rating_date" t-options="{'widget': 'date'}"/></td>
+                                    <td>
+                                        <div class="o_portal_rating">
+                                            <t t-foreach="range(1, 6)" t-as="i">
+                                                <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.overall_rating) else '-o'}" 
+                                                   style="color: #FFD700;"></i>
+                                            </t>
+                                            <span class="ms-1">(<t t-esc="rating.overall_rating"/>)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <a t-attf-href="/my/ratings/#{rating.id}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-if="pager" class="o_portal_pager">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Rating Portal Detail Template -->
+    <template id="portal_rating_page" name="Rating Details">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="base.group_portal">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=auto.voyage.rating&amp;id=%s&amp;view_type=form' % (rating.id)"/>
+                </t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <small class="text-muted">Rating for </small>
+                            <span t-field="rating.service_id.name"/>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <strong>Service Request:</strong> <span t-field="rating.service_id.name"/><br/>
+                                <strong>Service Provider:</strong> <span t-field="rating.provider_id.name"/><br/>
+                                <strong>Service:</strong> <span t-field="rating.service_id.service_id.name"/><br/>
+                                <strong>Rating Date:</strong> <span t-field="rating.rating_date"/><br/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <strong>Overall Rating:</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <t t-foreach="range(1, 6)" t-as="i">
+                                            <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.overall_rating) else '-o'}" 
+                                               style="color: #FFD700; font-size: 24px;"></i>
+                                        </t>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <span><t t-esc="rating.overall_rating"/></span> stars
+                                    </div>
+                                </div>
+                                <strong>Status:</strong> 
+                                <span t-attf-class="badge #{rating.state == 'draft' and 'bg-info' or rating.state == 'submitted' and 'bg-primary' or rating.state == 'published' and 'bg-success' or rating.state == 'archived' and 'bg-secondary'}">
+                                    <t t-out="rating.state.capitalize()"/>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Rating Details -->
+                        <div class="mt-4">
+                            <h6>Rating Details</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Service Quality</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <t t-foreach="range(1, 6)" t-as="i">
+                                                    <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.service_quality) else '-o'}" 
+                                                       style="color: #FFD700; font-size: 24px;"></i>
+                                                </t>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span><t t-esc="rating.service_quality"/></span> stars
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Timeliness</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <t t-foreach="range(1, 6)" t-as="i">
+                                                    <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.timeliness) else '-o'}" 
+                                                       style="color: #FFD700; font-size: 24px;"></i>
+                                                </t>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span><t t-esc="rating.timeliness"/></span> stars
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Communication</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <t t-foreach="range(1, 6)" t-as="i">
+                                                    <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.communication) else '-o'}" 
+                                                       style="color: #FFD700; font-size: 24px;"></i>
+                                                </t>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span><t t-esc="rating.communication"/></span> stars
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Value for Money</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <t t-foreach="range(1, 6)" t-as="i">
+                                                    <i t-attf-class="fa fa-star#{'' if i &lt;= int(rating.value_for_money) else '-o'}" 
+                                                       style="color: #FFD700; font-size: 24px;"></i>
+                                                </t>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span><t t-esc="rating.value_for_money"/></span> stars
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Feedback -->
+                        <div class="mt-4" t-if="rating.feedback">
+                            <h6>Feedback</h6>
+                            <div class="border p-3 rounded bg-light">
+                                <p t-field="rating.feedback"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Edit button if it's recent -->
+                        <div class="mt-4" t-if="can_edit">
+                            <a t-attf-href="/my/service-requests/#{rating.service_id.id}?edit_rating=1" class="btn btn-primary">
+                                <i class="fa fa-edit"></i> Edit Rating
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

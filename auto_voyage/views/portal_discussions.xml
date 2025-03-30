@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Discussions Portal List Template -->
+    <template id="portal_my_discussions" name="My Discussions">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Discussions</t>
+            </t>
+            <t t-if="not discussions">
+                <div class="alert alert-info" role="alert">
+                    There are currently no discussions for your account.
+                </div>
+            </t>
+            <t t-if="discussions">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover o_portal_my_doc_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Subject</th>
+                                <th>Service Request</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="discussions" t-as="discussion">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/discussions/#{discussion.id}">
+                                            <t t-out="discussion.name"/>
+                                        </a>
+                                    </td>
+                                    <td><t t-out="discussion.service_id.name"/></td>
+                                    <td><t t-out="discussion.category.capitalize() if discussion.category else ''"/></td>
+                                    <td><t t-out="discussion.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                    <td>
+                                        <t t-if="discussion.state == 'new'">
+                                            <span class="badge bg-info">New</span>
+                                        </t>
+                                        <t t-elif="discussion.state == 'in_progress'">
+                                            <span class="badge bg-primary">In Progress</span>
+                                        </t>
+                                        <t t-elif="discussion.state == 'waiting'">
+                                            <span class="badge bg-warning">Waiting</span>
+                                        </t>
+                                        <t t-elif="discussion.state == 'resolved'">
+                                            <span class="badge bg-success">Resolved</span>
+                                        </t>
+                                        <t t-elif="discussion.state == 'closed'">
+                                            <span class="badge bg-secondary">Closed</span>
+                                        </t>
+                                    </td>
+                                    <td class="text-end">
+                                        <a t-attf-href="/my/discussions/#{discussion.id}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-if="pager" class="o_portal_pager">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Discussion Portal Detail Template -->
+    <template id="portal_discussion_page" name="Discussion Details">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="base.group_portal">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=auto.voyage.discussion&amp;id=%s&amp;view_type=form' % (discussion.id)"/>
+                </t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <small class="text-muted">Discussion - </small><span t-field="discussion.name"/>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <strong>Service Request:</strong> <span t-field="discussion.service_id.name"/><br/>
+                                <strong>Category:</strong> <span t-field="discussion.category"/><br/>
+                                <strong>Priority:</strong> 
+                                <t t-if="discussion.priority == '0'">
+                                    <span class="badge bg-info">Low</span>
+                                </t>
+                                <t t-elif="discussion.priority == '1'">
+                                    <span class="badge bg-success">Normal</span>
+                                </t>
+                                <t t-elif="discussion.priority == '2'">
+                                    <span class="badge bg-warning">High</span>
+                                </t>
+                                <t t-elif="discussion.priority == '3'">
+                                    <span class="badge bg-danger">Urgent</span>
+                                </t>
+                                <br/>
+                                <strong>Created by:</strong> <span t-field="discussion.create_uid.name"/><br/>
+                                <strong>Created on:</strong> <span t-field="discussion.create_date"/><br/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <strong>Status:</strong> 
+                                <t t-if="discussion.state == 'new'">
+                                    <span class="badge bg-info">New</span>
+                                </t>
+                                <t t-elif="discussion.state == 'in_progress'">
+                                    <span class="badge bg-primary">In Progress</span>
+                                </t>
+                                <t t-elif="discussion.state == 'waiting'">
+                                    <span class="badge bg-warning">Waiting</span>
+                                </t>
+                                <t t-elif="discussion.state == 'resolved'">
+                                    <span class="badge bg-success">Resolved</span>
+                                </t>
+                                <t t-elif="discussion.state == 'closed'">
+                                    <span class="badge bg-secondary">Closed</span>
+                                </t>
+                                <br/>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mt-4" t-if="discussion.description">
+                            <h6>Description</h6>
+                            <div class="border p-3 rounded bg-light">
+                                <span t-field="discussion.description"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Resolution -->
+                        <div class="mt-4" t-if="discussion.resolution and discussion.state in ['resolved', 'closed']">
+                            <h6>Resolution</h6>
+                            <div class="border p-3 rounded bg-light">
+                                <span t-field="discussion.resolution"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Messages -->
+                        <div class="mt-4">
+                            <h6>Messages</h6>
+                            <div class="o_portal_messages">
+                                <t t-foreach="discussion.message_ids" t-as="message">
+                                    <div class="media o_portal_message_container mb-3 p-3 border rounded">
+                                        <div class="d-flex">
+                                            <img t-att-src="image_data_uri(message.author_avatar)" class="o_portal_message_img me-3" alt="avatar" style="width: 50px; height: 50px;"/>
+                                            <div class="flex-grow-1">
+                                                <div class="o_portal_message_header mb-2">
+                                                    <strong class="me-3"><t t-out="message.author_id.name"/></strong>
+                                                    <small class="text-muted">
+                                                        <i class="fa fa-calendar"></i>
+                                                        <span t-field="message.date" t-options='{"widget": "datetime"}'/>
+                                                    </small>
+                                                </div>
+                                                <div class="o_portal_message_body">
+                                                    <t t-out="message.body"/>
+                                                </div>
+                                                <div t-if="message.attachment_ids" class="o_portal_message_attachments mt-2">
+                                                    <div t-foreach="message.attachment_ids" t-as="attachment" class="o_portal_message_attachment">
+                                                        <a t-attf-href="/web/content/#{attachment.id}?download=true" target="_blank">
+                                                            <div class="o_portal_message_attachment_filename">
+                                                                <i class="fa fa-paperclip"></i> <t t-out="attachment.name"/>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <div t-if="not discussion.message_ids" class="alert alert-info">
+                                    No messages yet. Be the first to add a message!
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reply form -->
+                        <div class="mt-4" t-if="discussion.state in ['new', 'in_progress', 'waiting']">
+                            <h6>Add a message</h6>
+                            <form action="/my/discussions/post" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="discussion_id" t-att-value="discussion.id"/>
+                                <div class="form-group">
+                                    <textarea name="message" class="form-control" rows="4" required="required"></textarea>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="attachment" class="form-label">Attachment</label>
+                                    <input type="file" class="form-control" name="attachment"/>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-reply"></i> Send Message
+                                    </button>
+                                    <a t-if="discussion.create_uid.id == request.env.user.id and discussion.state != 'closed'" 
+                                       t-attf-href="/my/discussions/#{discussion.id}/close" 
+                                       class="btn btn-secondary ms-2">
+                                        <i class="fa fa-check"></i> Close Discussion
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

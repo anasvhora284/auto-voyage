@@ -17,6 +17,24 @@
                 <t t-set="count" t-value="service_request_count"/>
                 <t t-set="placeholder_count" t-value="'service_request_count'"/>
             </t>
+            <t t-if="contract_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Contracts</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="count" t-value="contract_count"/>
+                <t t-set="placeholder_count" t-value="'contract_count'"/>
+            </t>
+            <t t-if="discussion_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Discussions</t>
+                <t t-set="url" t-value="'/my/discussions'"/>
+                <t t-set="count" t-value="discussion_count"/>
+                <t t-set="placeholder_count" t-value="'discussion_count'"/>
+            </t>
+            <t t-if="rating_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Ratings</t>
+                <t t-set="url" t-value="'/my/ratings'"/>
+                <t t-set="count" t-value="rating_count"/>
+                <t t-set="placeholder_count" t-value="'rating_count'"/>
+            </t>
             <t t-set="provider" t-value="request.env['auto.voyage.service.provider'].sudo().search([('partner_id', '=', request.env.user.partner_id.id)], limit=1)"/>
             <t t-if="provider">
                 <div class="col-12 col-sm-6 col-md-4 mt-3">
