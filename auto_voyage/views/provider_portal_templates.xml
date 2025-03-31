@@ -21,7 +21,7 @@
                             <p><strong>Work Schedule:</strong> <span t-esc="provider.work_schedule.replace('_', ' ').title()"/></p>
                             <p><strong>Total Completed Services:</strong> <span t-esc="provider.total_services"/></p>
                             <p><strong>Average Rating:</strong> <span t-esc="'%.1f' % provider.rating if provider.rating else 'Not rated'"/></p>
-                            <p><strong>Completion Rate:</strong> <span t-esc="'%.1f%%' % provider.completion_rate if provider.completion_rate else 'N/A'"/></p>
+                            <p><strong>Completion Rate:</strong> <span t-esc="'%.1f' % (provider.completion_rate * 100) if provider.completion_rate else 'N/A'"/></p>
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@
                             <t t-if="service_requests">
                                 <div class="mb-4">
                                     <h5 class="text-primary">Today's Schedule</h5>
-                                    <t t-set="today_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() == datetime.today().date())"/>
+                                    <t t-set="today_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() == today)"/>
                                     <t t-if="not today_requests">
                                         <p>No services scheduled for today.</p>
                                     </t>
@@ -112,7 +112,7 @@
                                 
                                 <div class="mb-4">
                                     <h5 class="text-primary">Upcoming Services</h5>
-                                    <t t-set="upcoming_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() > datetime.today().date() and r.state in ('scheduled', 'confirmed'))"/>
+                                    <t t-set="upcoming_requests" t-value="service_requests.filtered(lambda r: r.scheduled_date.date() > today and r.state in ('scheduled', 'confirmed'))"/>
                                     <t t-if="not upcoming_requests">
                                         <p>No upcoming services scheduled.</p>
                                     </t>

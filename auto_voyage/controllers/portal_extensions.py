@@ -11,6 +11,30 @@ import base64
 class AutoVoyagePortalExtensions(AutoVoyagePortal):
     """Extended Portal Controller for Auto Voyage"""
     
+    def _get_frontend_layout_values(self):
+        """Helper method to prepare frontend layout values"""
+        # Get frontend languages
+        frontend_languages = request.env['res.lang'].sudo()._get_frontend()
+        current_lang = frontend_languages[request.env.lang]
+        
+        # Prepare frontend layout values
+        return {
+            'frontend_languages': frontend_languages,
+            'frontend_language': current_lang,
+            'frontend_language_code': request.env.lang,
+            'frontend_language_name': current_lang.name,
+            'frontend_language_direction': current_lang.direction,
+            'frontend_language_rtl': current_lang.direction == 'rtl',
+            'is_portal': True,
+            'no_breadcrumbs': False,
+            'breadcrumbs_searchbar': False,
+            'is_frontend_multilang': bool(len(frontend_languages) > 1),
+            'lang': request.env.lang,
+            'user_id': request.env.user,
+            'res_company': request.env.company,
+            'request': request,
+        }
+    
     # Contracts
     @http.route(['/my/contracts', '/my/contracts/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_contracts(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
@@ -75,6 +99,7 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
             'sortby': sortby,
             'filterby': filterby,
         })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_my_contracts", values)
     
@@ -86,10 +111,12 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         except (AccessError, MissingError):
             return request.redirect('/my/contracts')
             
-        values = {
+        values = self._prepare_portal_layout_values()
+        values.update({
             'contract': contract_sudo,
             'page_name': 'contract',
-        }
+        })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_contract_page", values)
     
@@ -181,6 +208,7 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
             'sortby': sortby,
             'filterby': filterby,
         })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_my_discussions", values)
     
@@ -192,10 +220,12 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         except (AccessError, MissingError):
             return request.redirect('/my/discussions')
             
-        values = {
+        values = self._prepare_portal_layout_values()
+        values.update({
             'discussion': discussion_sudo,
             'page_name': 'discussion',
-        }
+        })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_discussion_page", values)
     
@@ -333,6 +363,7 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
             'sortby': sortby,
             'filterby': filterby,
         })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_my_ratings", values)
     
@@ -347,34 +378,28 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         # Check if rating can be edited (within 7 days and not published)
         can_edit = (fields.Datetime.now() - rating_sudo.create_date).days <= 7 and rating_sudo.state != 'published'
             
-        values = {
+        values = self._prepare_portal_layout_values()
+        values.update({
             'rating': rating_sudo,
             'page_name': 'ratings',
             'can_edit': can_edit,
-        }
+        })
+        values.update(self._get_frontend_layout_values())
         
         return request.render("auto_voyage.portal_rating_page", values)
     
     @http.route(['/my/ratings/<int:rating_id>/edit'], type='http', auth="user", website=True)
     def portal_rating_edit(self, rating_id, **kw):
-        print(f"Hello 123 <----------------------{rating_id}----------------------->")
-        print(f"Hello 123 <----------------------{request.env.user}----------------------->")
-        print(f"Hello 123 <----------------------{request.env.user.partner_id}----------------------->")
         """Display rating edit form"""
-        print("Before try")
         try:
-            print("Inside try")
             rating_sudo = self._document_check_access('auto.voyage.rating', rating_id)
-            print(f"Hello 123 <----------------------{rating_sudo}----------------------->")
             if rating_sudo.partner_id != request.env.user.partner_id:
-                print("User doesn't match")
                 return request.redirect('/my/ratings')
         except (AccessError, MissingError):
-            print("Caught exception")
             return request.redirect('/my/ratings')
             
-        print("After try")
-        values = {
+        values = self._prepare_portal_layout_values()
+        values.update({
             'rating': rating_sudo,
             'page_name': 'rating_edit',
             'service_quality': rating_sudo.service_quality,
@@ -382,11 +407,10 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
             'communication': rating_sudo.communication,
             'value_for_money': rating_sudo.value_for_money,
             'feedback': rating_sudo.feedback,
-        }
+        })
+        values.update(self._get_frontend_layout_values())
         
-        print("Before render")
         return request.render("auto_voyage.portal_rating_edit", values)
-        print("After render")
     
     @http.route(['/my/ratings/submit'], type='http', auth="user", website=True, methods=['POST'], csrf=True)
     def portal_rating_submit(self, **kw):
@@ -400,9 +424,13 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         for field in required_fields:
             if field in kw:
                 try:
-                    values[field] = float(kw.get(field))
+                    value = int(kw.get(field))
+                    # Ensure the rating value is within the valid range (1 to 5)
+                    if value < 1 or value > 5:
+                        raise ValueError("Rating must be between 1 and 5.")
+                    values[field] = str(value)  # Store as string to match the database type
                 except (ValueError, TypeError):
-                    values[field] = 0.0
+                    values[field] = '0'  # Default to '0' as a string
         
         values['feedback'] = kw.get('feedback', '')
         
@@ -433,7 +461,69 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
                     new_rating = Rating.create(values)
                     return request.redirect('/my/ratings/%s' % new_rating.id)
         except Exception as e:
-            _logger.error("Error in rating submission: %s", str(e))
+            self._logger.error("Error in rating submission: %s", str(e))
             return request.redirect('/my/ratings')
         
         return request.redirect('/my/ratings')
+
+    @http.route(['/my/service-request/<int:service_request_id>/download'], type='http', auth="user", website=True)
+    def portal_service_request_download(self, service_request_id, **kw):
+        """Download service request report"""
+        try:
+            service_request_sudo = self._document_check_access('auto.voyage.service.request', service_request_id)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+            
+        if service_request_sudo.state != 'completed':
+            return request.redirect('/my/service-request/%s' % service_request_id)
+        
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'service_request': service_request_sudo,
+            'page_name': 'service_request',
+            'is_portal': True,
+            'frontend_languages': request.env['res.lang'].sudo()._get_frontend(),
+            'is_frontend_multilang': len(request.env['res.lang'].sudo()._get_frontend()) > 1,
+        })
+        values.update(self._get_frontend_layout_values())
+            
+        # Generate report content
+        report_content = self._generate_service_report(service_request_sudo)
+        
+        # Convert to PDF
+        pdf_content = self._html_to_pdf(report_content)
+        
+        # Prepare response
+        filename = f'Service_Report_{service_request_sudo.name}.pdf'
+        headers = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ('Content-Length', len(pdf_content)),
+        ]
+        
+        return request.make_response(pdf_content, headers=headers)
+        
+    def _generate_service_report(self, service_request):
+        """Generate PDF report for service request"""
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'docs': [service_request],
+            'company': request.env.company,
+        })
+        values.update(self._get_frontend_layout_values())
+        
+        return request.env['ir.ui.view']._render_template(
+            'auto_voyage.service_report_template',
+            values
+        )
+        
+    def _html_to_pdf(self, html_content):
+        """Convert HTML content to PDF"""
+        return request.env['ir.actions.report']._run_wkhtmltopdf(
+            [html_content],
+            header=None,
+            footer=None,
+            landscape=False,
+            specific_paperformat_args=None,
+            set_viewport_size=False
+        )
