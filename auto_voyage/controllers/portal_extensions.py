@@ -381,7 +381,7 @@ class AutoVoyagePortalExtensions(AutoVoyagePortal):
         values = self._prepare_portal_layout_values()
         values.update({
             'rating': rating_sudo,
-            'page_name': 'ratings',
+            'page_name': 'rating',
             'can_edit': can_edit,
         })
         values.update(self._get_frontend_layout_values())

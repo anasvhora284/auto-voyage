@@ -134,7 +134,8 @@ class AutoVoyageWebsite(http.Controller):
             'vehicles': request.env['auto.voyage.vehicle'].search([('partner_id', '=', request.env.user.partner_id.id)]),
             'services': request.env['auto.voyage.service'].search([]),
             'providers': request.env['auto.voyage.service.provider'].search([]),
-            'categories': SERVICE_CATEGORIES
+            'categories': SERVICE_CATEGORIES,
+            'page_name': 'booking'
         })
     
     @http.route('/booking/submit', type='http', auth="user", website=True, methods=['POST'])

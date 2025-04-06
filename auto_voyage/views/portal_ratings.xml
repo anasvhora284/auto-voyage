@@ -271,18 +271,4 @@
             </div>
         </t>
     </template>
-
-    <!-- Ratings Submenu -->
-    <template id="portal_my_home_menu_ratings" name="Portal layout : Rating entries" inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <li t-if="page_name == 'ratings'" t-attf-class="breadcrumb-item #{'active ' if not rating else ''}">
-                <a t-if="rating" t-attf-href="/my/ratings?{{ keep_query() }}">Ratings</a>
-                <t t-else="">Ratings</t>
-            </li>
-            <li t-if="rating" class="breadcrumb-item active">
-                <t t-out="rating.name" t-if="rating.name != '/'"/>
-                <t t-else=""><em>Draft Rating</em></t>
-            </li>
-        </xpath>
-    </template>
 </odoo>

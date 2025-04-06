@@ -214,18 +214,4 @@
             </div>
         </t>
     </template>
-
-    <!-- Discussions Submenu -->
-    <template id="portal_my_home_menu_discussions" name="Portal layout : Discussion entries" inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <li t-if="page_name == 'discussions' or page_name == 'discussion'" t-attf-class="breadcrumb-item #{'active ' if not discussion else ''}">
-                <a t-if="discussion" t-attf-href="/my/discussions?{{ keep_query() }}">Discussions</a>
-                <t t-else="">Discussions</t>
-            </li>
-            <li t-if="discussion" class="breadcrumb-item active">
-                <t t-out="discussion.name" t-if="discussion.name != '/'"/>
-                <t t-else=""><em>New Discussion</em></t>
-            </li>
-        </xpath>
-    </template>
 </odoo>

@@ -1,0 +1,125 @@
+/* Provider Portal Styles */
+
+/* Dashboard Styles */
+.o_provider_dashboard {
+    background-color: #f9fafb;
+    min-height: calc(100vh - 150px);
+}
+
+.provider-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.provider-status {
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Styles */
+.o_provider_dashboard .card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.o_provider_dashboard .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.o_provider_dashboard .card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Table Styles */
+.o_provider_dashboard .table th {
+    font-weight: 600;
+    color: #555;
+}
+
+.o_provider_dashboard .table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+/* Badge Styles */
+.o_provider_dashboard .badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
+
+.badge.rounded-pill {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+}
+
+/* Button Styles */
+.o_provider_dashboard .btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.o_provider_dashboard .btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.o_provider_dashboard .btn-outline-primary {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+.o_provider_dashboard .btn-outline-primary:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+/* Status Indicators */
+.o_provider_dashboard .text-warning {
+    color: #f39c12 !important;
+}
+
+.o_provider_dashboard .text-success {
+    color: #27ae60 !important;
+}
+
+.o_provider_dashboard .text-info {
+    color: #3498db !important;
+}
+
+.o_provider_dashboard .bg-warning {
+    background-color: #f39c12 !important;
+}
+
+.o_provider_dashboard .bg-success {
+    background-color: #27ae60 !important;
+}
+
+.o_provider_dashboard .bg-info {
+    background-color: #3498db !important;
+}
+
+/* Helper Classes */
+.o_provider_dashboard .border-end {
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.o_provider_dashboard .shadow-sm {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .provider-header .lead {
+        font-size: 0.9rem;
+    }
+
+    .provider-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .provider-status {
+        margin-top: 1rem;
+    }
+}

@@ -49,7 +49,7 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
         'data/service_data.xml',
         
         # Views - Menu first, then other views
-        'views/menu_views.xml',  # Base menu structure should be loaded first
+        'views/menu_views.xml',
         'views/vehicle_views.xml',
         'views/service_views.xml',
         'views/service_provider_views.xml',
@@ -66,12 +66,12 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
         'views/website_providers.xml',
         'views/website_about.xml',
         'views/website_contact.xml',
+        'views/portal_submenus.xml',
         'views/portal_vehicles.xml',
         'views/portal_templates.xml',
         'views/portal_contracts.xml',
         'views/portal_discussions.xml',
         'views/portal_ratings.xml',
-        'views/provider_portal_templates.xml',
         'views/booking_templates.xml',
         
         # Wizards
@@ -96,12 +96,10 @@ Auto Voyage is a comprehensive vehicle service management system that helps:
             'auto_voyage/static/src/js/portal.js',
             'auto_voyage/static/src/js/website.js',
             'auto_voyage/static/src/js/rating_stars.js',
+            'auto_voyage/static/src/js/booking.js',
             
             # XML templates
             'auto_voyage/static/src/xml/provider_card.xml',
-        ],
-        'web.assets_frontend_lazy': [
-            'auto_voyage/static/src/js/booking.js',
         ],
     },
     

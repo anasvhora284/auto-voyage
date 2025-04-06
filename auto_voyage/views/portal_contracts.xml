@@ -55,20 +55,6 @@
         </t>
     </template>
 
-    <!-- Contracts Submenu -->
-    <template id="portal_my_home_menu_contracts" name="Portal layout : Contract entries" inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <li t-if="page_name == 'contracts' or page_name == 'contract'" t-attf-class="breadcrumb-item #{'active ' if not contract else ''}">
-                <a t-if="contract" t-attf-href="/my/contracts?{{ keep_query() }}">Contracts</a>
-                <t t-else="">Contracts</t>
-            </li>
-            <li t-if="contract" class="breadcrumb-item active">
-                <t t-out="contract.name" t-if="contract.name != '/'"/>
-                <t t-else=""><em>Draft Contract</em></t>
-            </li>
-        </xpath>
-    </template>
-
     <!-- Contract Portal Detail Template -->
     <template id="portal_contract_page" name="Contract Details">
         <t t-call="portal.portal_layout">

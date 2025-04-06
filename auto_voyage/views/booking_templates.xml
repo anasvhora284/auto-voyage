@@ -4,103 +4,194 @@
     <template id="booking_page" name="Booking Page">
         <t t-call="website.layout">
             <div class="oe_structure">
-                <section class="s_text_image pt48 pb48 o_colored_level bg-light">
+                <!-- Hero Section with Parallax Effect -->
+                <section class="s_text_image pt64 pb64 o_colored_level position-relative" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('/auto_voyage/static/src/img/booking_hero.jpg') no-repeat center center; background-size: cover; background-attachment: fixed;">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-6 pt16 pb16">
-                                <h1>Book a Service</h1>
-                                <p class="lead">Schedule your next service appointment quickly and easily</p>
-                            </div>
-                            <div class="col-lg-6 pt16 pb16">
-                                <img src="/auto_voyage/static/src/img/booking_hero.jpg" class="img-fluid rounded" alt="Booking"/>
+                            <div class="col-lg-8 mx-auto text-center pt32 pb32">
+                                <h1 class="display-4 text-white fw-bold mb-3">Book Your Auto Service</h1>
+                                <p class="lead text-white mb-4">Schedule your next service appointment with our trusted professionals in just a few easy steps</p>
+                                <a href="#booking-form" class="btn btn-primary btn-lg px-4 py-2 rounded-pill animate__animated animate__pulse animate__infinite">
+                                    <i class="fa fa-calendar-check me-2"></i> Book Now
+                                </a>
                             </div>
                         </div>
                     </div>
                 </section>
                 
-                <section class="pt48 pb48">
+                <!-- Our Services Showcase -->
+                <section class="pt64 pb48 bg-white">
                     <div class="container">
                         <div class="row">
-                            <div class="col-lg-8 mx-auto">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="mb-0">Service Booking Form</h3>
+                            <div class="col-lg-12 text-center mb-5">
+                                <h2 class="fw-bold">Our Premium Services</h2>
+                                <p class="lead text-muted">Choose from our comprehensive range of professional auto services</p>
+                                <div class="border-bottom border-primary mx-auto mt-3" style="width: 80px; border-width: 3px !important;"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="icon-wrapper rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                                            <i class="fa fa-cogs fa-2x color-text"></i>
+                                        </div>
+                                        <h4 class="fw-bold">Maintenance Services</h4>
+                                        <p class="text-muted">Regular maintenance to keep your vehicle in optimal condition</p>
                                     </div>
-                                    <div class="card-body">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="icon-wrapper rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                                            <i class="fa fa-wrench fa-2x color-text"></i>
+                                        </div>
+                                        <h4 class="fw-bold">Repair Services</h4>
+                                        <p class="text-muted">Professional repair solutions for any mechanical issues</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="icon-wrapper rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                                            <i class="fa fa-car fa-2x color-text"></i>
+                                        </div>
+                                        <h4 class="fw-bold">Specialty Services</h4>
+                                        <p class="text-muted">Custom solutions for unique requirements and upgrades</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Booking Form Section -->
+                <section id="booking-form" class="pt64 pb64" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-10 mx-auto">
+                                <div class="card border-0 shadow-lg rounded-lg overflow-hidden">
+                                    <div class="row g-0">
+                                        <div class="col-lg-5 d-none d-lg-block">
+                                            <div class="h-100 p-0" style="background: url('/auto_voyage/static/src/img/maintenance.jpg') no-repeat center center; background-size: cover; min-height: 600px;"></div>
+                                    </div>
+                                        <div class="col-lg-7">
+                                            <div class="card-header bg-primary text-white p-4">
+                                                <h3 class="mb-0 fw-bold"><i class="fa fa-calendar-alt me-2"></i>Schedule Your Service</h3>
+                                                <p class="mb-0 mt-1 text-white-50">Fill in the details below to book your appointment</p>
+                                            </div>
+                                            <div class="card-body p-4">
                                         <t t-if="request.params.get('error')">
-                                            <div class="alert alert-danger" role="alert">
-                                                <i class="fa fa-exclamation-triangle me-2"/>
+                                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                        <i class="fa fa-exclamation-circle me-2 fa-lg"></i>
+                                                        <div>
                                                 There was an error processing your booking. Please check all fields and try again.
+                                                        </div>
                                             </div>
                                         </t>
                                         <t t-if="request.params.get('success')">
-                                            <div class="alert alert-success" role="alert">
-                                                <i class="fa fa-check-circle me-2"/>
+                                                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                                                        <i class="fa fa-check-circle me-2 fa-lg"></i>
+                                                        <div>
                                                 Your service request has been submitted successfully! You can view it in your service requests.
-                                                <div class="mt-3">
-                                                    <a href="/my/service-requests" class="btn btn-outline-success">View My Service Requests</a>
                                                 </div>
+                                            </div>
+                                                    <div class="text-center mt-4">
+                                                        <a href="/my/service-requests" class="btn btn-primary">
+                                                            <i class="fa fa-list me-1"></i> View My Service Requests
+                                                        </a>
                                             </div>
                                         </t>
                                         
-                                        <form t-if="not request.params.get('success')" action="/booking/submit" method="post" class="mt-3 o_auto_voyage_booking_form">
+                                                <form t-if="not request.params.get('success')" action="/booking/submit" method="post" class="mt-4 o_auto_voyage_booking_form">
                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                             
-                                            <div class="mb-3">
-                                                <label for="vehicle_id" class="form-label">Select Vehicle<span class="text-danger">*</span></label>
-                                                <select class="form-select" name="vehicle_id" id="vehicle_id" required="required">
+                                                    <div class="mb-4 position-relative">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" name="vehicle_id" id="vehicle_id" required="required" style="height: 60px;">
                                                     <option value="">Choose a vehicle...</option>
                                                     <t t-foreach="vehicles" t-as="vehicle">
-                                                        <option t-att-value="vehicle.id" t-esc="vehicle.name"/>
+                                                                    <option t-att-value="vehicle.id">
+                                                                        <t t-esc="vehicle.make"/> <t t-esc="vehicle.model"/> (<t t-esc="vehicle.year"/>) - <t t-esc="vehicle.license_plate"/>
+                                                                    </option>
                                                     </t>
                                                 </select>
-                                                <div class="form-text">
-                                                    <t t-if="not vehicles">
-                                                        <span class="text-danger">No vehicles found. Please first <a href="/web#action=auto_voyage.action_auto_voyage_vehicle&amp;view_type=form">add a vehicle</a> to your account.</span>
-                                                    </t>
+                                                            <label for="vehicle_id">
+                                                                <i class="fa fa-car me-2 text-primary"></i>Select Vehicle
+                                                            </label>
+                                                        </div>
+                                                        <div t-if="not vehicles" class="text-danger mt-2 small">
+                                                            <i class="fa fa-info-circle me-1"></i>
+                                                            No vehicles found. Please first 
+                                                            <a href="/my/vehicle/new" class="fw-bold">add a vehicle</a> to your account.
                                                 </div>
                                             </div>
                                             
-                                            <div class="mb-3">
-                                                <label for="service_id" class="form-label">Service Type<span class="text-danger">*</span></label>
-                                                <select class="form-select" name="service_id" id="service_id" required="required">
+                                                    <div class="mb-4 position-relative">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" name="service_id" id="service_id" required="required" style="height: 60px;">
                                                     <option value="">Choose a service...</option>
                                                     <t t-foreach="services" t-as="service">
                                                         <option t-att-value="service.id" t-att-data-price="service.price" t-att-data-duration="service.duration">
-                                                            <t t-esc="service.name"/> (<t t-esc="service.category.capitalize()"/>, <t t-esc="'%.2f' % service.price"/>)
+                                                                        <t t-esc="service.name"/> (<t t-esc="service.category.capitalize()"/>)
                                                         </option>
                                                     </t>
                                                 </select>
+                                                            <label for="service_id">
+                                                                <i class="fa fa-wrench me-2 text-primary"></i>Service Type
+                                                            </label>
+                                                        </div>
                                             </div>
                                             
-                                            <div class="mb-3">
-                                                <label for="scheduled_date" class="form-label">Preferred Date and Time<span class="text-danger">*</span></label>
-                                                <input type="datetime-local" class="form-control" name="scheduled_date" id="scheduled_date" required="required"/>
-                                                <div class="form-text">Please select your preferred date and time for the service.</div>
-                                                <!-- Date validation is now handled in booking.js -->
+                                                    <div id="service-details" class="mb-4 p-4 rounded border-dashed border-2 border-primary bg-light d-none">
+                                                        <div class="row">
+                                                            <div class="col-6 text-center border-end">
+                                                                <p class="text-muted mb-1">
+                                                                    <i class="fa fa-tag text-primary me-1"></i> Price Estimate
+                                                                </p>
+                                                                <h4 class="mb-0 fw-bold">$<span id="service-price">-</span></h4>
+                                                            </div>
+                                                            <div class="col-6 text-center">
+                                                                <p class="text-muted mb-1">
+                                                                    <i class="fa fa-clock text-primary me-1"></i> Duration
+                                                                </p>
+                                                                <h4 class="mb-0 fw-bold"><span id="service-duration">-</span> hours</h4>
                                             </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="description" class="form-label">Additional Details</label>
-                                                <textarea class="form-control" name="description" id="description" rows="4" placeholder="Please provide any additional details about your service requirements..."></textarea>
                                             </div>
-                                            
-                                            <div id="service-details" class="mb-4 p-3 bg-light rounded d-none">
-                                                <h5>Service Details</h5>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <p><strong>Estimated Price:</strong> <span id="service-price">-</span></p>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <p><strong>Estimated Duration:</strong> <span id="service-duration">-</span> hours</p>
+                                                    
+                                                    <div class="mb-4 position-relative">
+                                                        <div class="form-floating">
+                                                            <input type="datetime-local" class="form-control" name="scheduled_date" id="scheduled_date" required="required" style="height: 60px;"/>
+                                                            <label for="scheduled_date">
+                                                                <i class="fa fa-calendar-alt me-2 text-primary"></i>Preferred Date and Time
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-text">
+                                                            <i class="fa fa-info-circle me-1"></i>
+                                                            Please select your preferred appointment date and time
+                                                        </div>
                                                     </div>
+                                                    
+                                                    <div class="mb-4 position-relative">
+                                                        <div class="form-floating">
+                                                            <textarea class="form-control" name="description" id="description" rows="4" style="height: 120px;" placeholder="Please provide any additional details..."></textarea>
+                                                            <label for="description">
+                                                                <i class="fa fa-comment-alt me-2 text-primary"></i>Additional Details
+                                                            </label>
                                                 </div>
                                             </div>
                                             
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-primary btn-lg">Submit Booking Request</button>
+                                                    <div class="d-grid mt-4">
+                                                        <button type="submit" class="btn btn-primary btn-lg py-3 rounded-pill">
+                                                            <i class="fa fa-check-circle me-2"></i> Book My Service
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -109,56 +200,57 @@
                 </section>
                 
                 <!-- How It Works Section -->
-                <section class="pt48 pb48 bg-light">
+                <section class="pt64 pb64 bg-white">
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-12 text-center mb-5">
-                                <h2 class="display-5">How It Works</h2>
-                                <p class="lead">Our simple booking process makes it easy to get your vehicle serviced</p>
+                                <h2 class="fw-bold">How Our Booking Process Works</h2>
+                                <p class="lead text-muted">Four simple steps to get your vehicle serviced</p>
+                                <div class="border-bottom border-primary mx-auto mt-3" style="width: 80px; border-width: 3px !important;"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-4">
-                                <div class="card h-100 border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4 process-step">
                                             <h2 class="mb-0">1</h2>
                                         </div>
-                                        <h4>Book</h4>
-                                        <p>Fill out the booking form with your vehicle and service details</p>
+                                        <h4 class="fw-bold">Book Online</h4>
+                                        <p class="text-muted">Complete our easy booking form with your service requirements</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card h-100 border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4 process-step">
                                             <h2 class="mb-0">2</h2>
                                         </div>
-                                        <h4>Confirm</h4>
-                                        <p>We'll confirm your booking and assign a qualified service provider</p>
+                                        <h4 class="fw-bold">Confirmation</h4>
+                                        <p class="text-muted">Receive confirmation and appointment details via email</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card h-100 border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4 process-step">
                                             <h2 class="mb-0">3</h2>
                                         </div>
-                                        <h4>Service</h4>
-                                        <p>Drop off your vehicle at the scheduled time for service</p>
+                                        <h4 class="fw-bold">Service Day</h4>
+                                        <p class="text-muted">Our certified technicians complete your requested service</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card h-100 border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center p-4">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4 process-step">
                                             <h2 class="mb-0">4</h2>
                                         </div>
-                                        <h4>Review</h4>
-                                        <p>After service completion, rate your experience and provide feedback</p>
+                                        <h4 class="fw-bold">Feedback</h4>
+                                        <p class="text-muted">Share your experience and rate our service quality</p>
                                     </div>
                                 </div>
                             </div>
@@ -166,9 +258,162 @@
                     </div>
                 </section>
                 
-                <!-- Additional Booking JS -->
+                <!-- Customer Testimonials Section -->
+                <section class="pt64 pb64" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 text-center mb-5">
+                                <h2 class="fw-bold">What Our Customers Say</h2>
+                                <p class="lead text-muted">Hear from satisfied customers who've used our service</p>
+                                <div class="border-bottom border-primary mx-auto mt-3" style="width: 80px; border-width: 3px !important;"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm p-2">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                        </div>
+                                        <p class="fst-italic text-muted mb-4">
+                                            "The booking process was incredibly simple and the service was top-notch. 
+                                            My car has never run better. I'll definitely be using Auto Voyage for all 
+                                            my future service needs!"
+                                        </p>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="/auto_voyage/static/src/img/avatar1.jpg" alt="Customer" class="rounded-circle" width="50" height="50"/>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-0 fw-bold">Sarah Johnson</h6>
+                                                <p class="small text-muted mb-0">Toyota Camry Owner</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm p-2">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                        </div>
+                                        <p class="fst-italic text-muted mb-4">
+                                            "I was impressed by how easy it was to book a service. The technicians were 
+                                            professional and completed the work faster than expected. Excellent service!"
+                                        </p>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="/auto_voyage/static/src/img/avatar2.jpg" alt="Customer" class="rounded-circle" width="50" height="50"/>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-0 fw-bold">Michael Rodriguez</h6>
+                                                <p class="small text-muted mb-0">Honda Civic Owner</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm p-2">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star-half-alt text-warning"></i>
+                                        </div>
+                                        <p class="fst-italic text-muted mb-4">
+                                            "Auto Voyage made getting my car serviced stress-free. Their online booking 
+                                            system is intuitive and the follow-up communication was excellent. Highly recommend!"
+                                        </p>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="/auto_voyage/static/src/img/avatar3.jpg" alt="Customer" class="rounded-circle" width="50" height="50"/>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-0 fw-bold">Jessica Thompson</h6>
+                                                <p class="small text-muted mb-0">BMW 3 Series Owner</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Call to Action -->
+                <section class="py-5" style="background: linear-gradient(90deg, #2c3e50, #4ca1af);">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8 text-center">
+                                <h2 class="text-white fw-bold mb-4">Ready to Experience Premium Auto Service?</h2>
+                                <p class="text-white-50 mb-4">Book your service appointment today and join thousands of satisfied customers</p>
+                                <a href="#booking-form" class="btn btn-light btn-lg px-4 py-2 rounded-pill">
+                                    <i class="fa fa-calendar-check me-2"></i> Schedule Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- CSS for the enhanced booking page -->
+                <style>
+                    /* Enhanced Styling */
+                    .hover-shadow:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .process-step {
+                        width: 80px;
+                        height: 80px;
+                        font-size: 1.75rem;
+                        font-weight: bold;
+                        position: relative;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .card:hover .process-step {
+                        transform: scale(1.1);
+                    }
+                    
+                    .border-dashed {
+                        border-style: dashed !important;
+                    }
+                    
+                    .form-control:focus, .form-select:focus {
+                        border-color: #4ca1af;
+                        box-shadow: 0 0 0 0.25rem rgba(76, 161, 175, 0.25);
+                    }
+                    
+                    /* Animate the book now button */
+                    @keyframes pulse {
+                        0% {transform: scale(1);}
+                        50% {transform: scale(1.05);}
+                        100% {transform: scale(1);}
+                    }
+                    
+                    .animate__pulse {
+                        animation-duration: 2s;
+                    }
+                </style>
+                
+                <!-- Enhanced Booking JS -->
                 <script type="text/javascript">
                     $(document).ready(function() {
+                        // Service selection effects
                         $('#service_id').change(function() {
                             var selectedOption = $(this).find('option:selected');
                             var price = selectedOption.data('price');
@@ -177,10 +422,29 @@
                             if (price) {
                                 $('#service-price').text(price.toFixed(2));
                                 $('#service-duration').text(duration);
-                                $('#service-details').removeClass('d-none');
+                                $('#service-details').removeClass('d-none').addClass('animate__animated animate__fadeIn');
                             } else {
                                 $('#service-details').addClass('d-none');
                             }
+                        });
+                        
+                        // Set minimum date for scheduling (today)
+                        var today = new Date();
+                        var month = (today.getMonth() + 1).toString().padStart(2, '0');
+                        var day = today.getDate().toString().padStart(2, '0');
+                        var hours = today.getHours().toString().padStart(2, '0');
+                        var minutes = today.getMinutes().toString().padStart(2, '0');
+                        
+                        var minDateTime = today.getFullYear() + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                        $('#scheduled_date').attr('min', minDateTime);
+                        
+                        // Smooth scroll to booking form
+                        $('a[href="#booking-form"]').click(function(e) {
+                            e.preventDefault();
+                            
+                            $('html, body').animate({
+                                scrollTop: $($(this).attr('href')).offset().top - 100
+                            }, 800, 'swing');
                         });
                     });
                 </script>

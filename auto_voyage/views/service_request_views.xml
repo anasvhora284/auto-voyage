@@ -128,6 +128,7 @@
         <field name="res_model">auto.voyage.service.request</field>
         <field name="view_mode">list,form,calendar</field>
         <field name="context">{'search_default_draft': 1}</field>
+        <field name="domain">[]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first service request!
@@ -140,4 +141,191 @@
 
     <!-- Service Request Menu -->
     <menuitem id="menu_auto_voyage_service_request" name="Service Requests" parent="menu_auto_voyage_operations" action="action_auto_voyage_service_request" sequence="20" />
+
+    <!-- Service Provider Dashboard View -->
+    <record id="view_auto_voyage_provider_dashboard" model="ir.ui.view">
+        <field name="name">auto.voyage.provider.dashboard</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <kanban class="o_provider_dashboard" default_group_by="state" default_order="scheduled_date desc" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="vehicle_id"/>
+                <field name="partner_id"/>
+                <field name="service_id"/>
+                <field name="scheduled_date"/>
+                <field name="state"/>
+                <field name="provider_id"/>
+                <field name="amount"/>
+                <field name="currency_id"/>
+                
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click {{ record.state.raw_value == 'completed' ? 'oe_kanban_color_5' : 
+                                           record.state.raw_value == 'in_progress' ? 'oe_kanban_color_2' : 
+                                           record.state.raw_value == 'scheduled' ? 'oe_kanban_color_3' : '' }}">
+                            <div class="oe_kanban_details">
+                                <strong class="mb-2 d-block"><field name="name"/></strong>
+                                <ul>
+                                    <li><strong>Customer:</strong> <field name="partner_id"/></li>
+                                    <li><strong>Vehicle:</strong> <field name="vehicle_id"/></li>
+                                    <li><strong>Service:</strong> <field name="service_id"/></li>
+                                    <li><strong>Scheduled:</strong> <field name="scheduled_date"/></li>
+                                    <li><strong>Amount:</strong> <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/></li>
+                                </ul>
+                                <div class="oe_kanban_bottom_right">
+                                    <span t-attf-class="badge badge-pill #{record.state.raw_value == 'draft' ? 'bg-secondary' : 
+                                                record.state.raw_value == 'confirmed' ? 'bg-info' : 
+                                                record.state.raw_value == 'scheduled' ? 'bg-warning' : 
+                                                record.state.raw_value == 'in_progress' ? 'bg-primary' : 
+                                                record.state.raw_value == 'completed' ? 'bg-success' : 'bg-danger'}">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Filter for Provider's Service Requests -->
+    <record id="view_auto_voyage_service_request_provider_filter" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.provider.filter</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vehicle_id"/>
+                <field name="service_id"/>
+                <field name="scheduled_date"/>
+                
+                <filter string="Today's Schedule" name="today" domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('scheduled_date', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Scheduled Date" name="group_by_scheduled_date" context="{'group_by': 'scheduled_date:day'}"/>
+                    <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Vehicle" name="group_by_vehicle" context="{'group_by': 'vehicle_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Provider Service List View -->
+    <record id="view_auto_voyage_service_request_provider_list" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.provider.list</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vehicle_id"/>
+                <field name="service_id"/>
+                <field name="scheduled_date"/>
+                <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" widget="badge" decoration-success="state == 'completed'" decoration-info="state == 'in_progress'" decoration-warning="state == 'scheduled'" decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Provider Service Form View -->
+    <record id="view_auto_voyage_service_request_provider_form" model="ir.ui.view">
+        <field name="name">auto.voyage.service.request.provider.form</field>
+        <field name="model">auto.voyage.service.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Start Service" name="action_start" type="object" class="oe_highlight" 
+                           invisible="state != 'scheduled'"/>
+                    <button string="Complete Service" name="action_complete" type="object" class="oe_highlight" 
+                           invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="vehicle_id" readonly="1"/>
+                            <field name="service_id" readonly="1"/>
+                            <field name="provider_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date" readonly="1"/>
+                            <field name="scheduled_end_date" readonly="1"/>
+                            <field name="completion_date" readonly="1" invisible="not completion_date"/>
+                            <field name="amount" widget="monetary" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Service Details" name="service_details">
+                            <group>
+                                <field name="description" readonly="1"/>
+                                <field name="customer_notes" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Service Notes" name="service_notes">
+                            <field name="internal_notes" placeholder="Add notes about the service..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Provider Dashboard Action -->
+    <record id="action_provider_service_dashboard" model="ir.actions.act_window">
+        <field name="name">Service Dashboard</field>
+        <field name="res_model">auto.voyage.service.request</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="search_view_id" ref="view_auto_voyage_service_request_provider_filter"/>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_auto_voyage_provider_dashboard')}),
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_auto_voyage_service_request_provider_list')}),
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('view_auto_voyage_service_request_provider_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No service requests assigned to you yet
+            </p>
+            <p>
+                Service requests assigned to you will appear here. You can track your daily schedule, see upcoming services, and update service status.
+            </p>
+        </field>
+    </record>
+
+    <!-- Provider Menu Items -->
+    <menuitem id="menu_auto_voyage_provider_root" name="Auto Voyage Provider"
+              web_icon="auto_voyage,static/description/icon.png"
+              groups="auto_voyage.group_auto_voyage_provider"
+              sequence="80"/>
+              
+    <menuitem id="menu_auto_voyage_provider_dashboard" name="Dashboard"
+              parent="menu_auto_voyage_provider_root"
+              action="action_provider_service_dashboard"
+              sequence="10"/>
+              
+    <menuitem id="menu_auto_voyage_provider_services" name="My Services"
+              parent="menu_auto_voyage_provider_root"
+              action="action_provider_service_dashboard"
+              sequence="20"/>
 </odoo> 

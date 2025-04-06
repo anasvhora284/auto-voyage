@@ -17,24 +17,6 @@
                 <t t-set="count" t-value="service_request_count"/>
                 <t t-set="placeholder_count" t-value="'service_request_count'"/>
             </t>
-            <t t-if="contract_count" t-call="portal.portal_docs_entry">
-                <t t-set="title">Contracts</t>
-                <t t-set="url" t-value="'/my/contracts'"/>
-                <t t-set="count" t-value="contract_count"/>
-                <t t-set="placeholder_count" t-value="'contract_count'"/>
-            </t>
-            <t t-if="discussion_count" t-call="portal.portal_docs_entry">
-                <t t-set="title">Discussions</t>
-                <t t-set="url" t-value="'/my/discussions'"/>
-                <t t-set="count" t-value="discussion_count"/>
-                <t t-set="placeholder_count" t-value="'discussion_count'"/>
-            </t>
-            <t t-if="rating_count" t-call="portal.portal_docs_entry">
-                <t t-set="title">Ratings</t>
-                <t t-set="url" t-value="'/my/ratings'"/>
-                <t t-set="count" t-value="rating_count"/>
-                <t t-set="placeholder_count" t-value="'rating_count'"/>
-            </t>
             <t t-set="provider" t-value="request.env['auto.voyage.service.provider'].sudo().search([('partner_id', '=', request.env.user.partner_id.id)], limit=1)"/>
             <t t-if="provider">
                 <div class="col-12 col-sm-6 col-md-4 mt-3">
@@ -56,7 +38,7 @@
     </template>
 
     <!-- Vehicles Portal Templates -->
-    <!-- <template id="portal_my_vehicles_list" name="My Vehicles">
+    <template id="portal_my_vehicles_list" name="My Vehicles">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
@@ -123,9 +105,9 @@
                 </div>
             </t>
         </t>
-    </template> -->
+    </template>
 
-    <!-- <template id="portal_my_vehicle_detail_view" name="My Vehicle Detail">
+    <template id="portal_my_vehicle_detail_view" name="My Vehicle Detail">
         <t t-call="portal.portal_layout">
             <t t-set="o_portal_fullwidth_alert" groups="auto_voyage.group_auto_voyage_manager">
                 <t t-call="portal.portal_back_in_edit_mode">
@@ -194,10 +176,10 @@
                 </div>
             </div>
         </t>
-    </template> -->
+    </template>
 
     <!-- Service Requests Portal Templates -->
-    <!-- <template id="portal_my_service_requests_list" name="My Service Requests">
+    <template id="portal_my_service_requests_list" name="My Service Requests">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
@@ -254,7 +236,7 @@
                 </div>
             </t>
         </t>
-    </template> -->
+    </template>
 
     <template id="portal_my_service_request_detail_view" name="Service Request Detail">
         <t t-call="portal.portal_layout">
@@ -281,14 +263,7 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h3 t-esc="service_request.name"/>
-                                    <t t-if="service_request.state == 'completed'">
-                                        <a t-att-href="'/my/service-request/%s/download' % service_request.id" class="btn btn-success">
-                                            <i class="fa fa-download me-2"></i>Download Service Report
-                                        </a>
-                                    </t>
-                                </div>
+                                <h3 t-esc="service_request.name"/>
                             </div>
                             
                             <div class="row mb-4">
@@ -385,12 +360,14 @@
                     </div>
                     
                     <t t-if="service_request.state == 'completed'">
+                        <!-- Add rating section if service is completed -->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <h5 class="mb-0">Rate this Service</h5>
                             </div>
                             <div class="card-body">
-                                <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', request.env.user.partner_id.id), ('service_id', '=', service_request.id)], limit=1)"/>
+                                <!-- Check if user has already rated -->
+                                <t t-set="existing_rating" t-value="env['auto.voyage.rating'].sudo().search([('partner_id', '=', user.partner_id.id), ('service_id', '=', service_request.id)], limit=1)"/>
                                 
                                 <t t-if="existing_rating">
                                     <div class="alert alert-info">
@@ -400,7 +377,7 @@
                                                 <span class="text-muted">Overall Rating:</span>
                                                 <div class="ms-2 d-inline-block">
                                                     <t t-foreach="range(1, 6)" t-as="star">
-                                                        <i t-attf-class="fa fa-star #{star &lt;= existing_rating.overall_rating and '' or '-o'}" style="color: #FFD700;"></i>
+                                                        <i t-attf-class="fa fa-star#{star &lt;= existing_rating.overall_rating and '' or '-o'}" style="color: #FFD700;"></i>
                                                     </t>
                                                 </div>
                                             </div>
@@ -417,21 +394,18 @@
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <input type="hidden" name="service_id" t-att-value="service_request.id"/>
                                         
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Service Quality</label>
-                                                <div class="d-flex align-items-center rating-stars-container">
-                                                    <div class="rating-stars me-3">
-                                                        <t t-foreach="range(1, 6)" t-as="star">
-                                                            <input type="radio" name="service_quality" t-att-id="'quality_' + str(star)" t-att-value="star" t-att-checked="star == 5" class="d-none"/>
-                                                            <label t-attf-for="quality_#{star}">
-                                                                <i class="fa fa-star" style="font-size: 24px;"></i>
-                                                            </label>
-                                                        </t>
-                                                    </div>
-                                                </div>
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Quality</label>
+                                                <select name="service_quality" class="form-select">
+                                                    <option value="5" selected="selected">Excellent (5)</option>
+                                                    <option value="4">Very Good (4)</option>
+                                                    <option value="3">Good (3)</option>
+                                                    <option value="2">Fair (2)</option>
+                                                    <option value="1">Poor (1)</option>
+                                                </select>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4 mb-3">
                                                 <label class="form-label">Timeliness</label>
                                                 <select name="timeliness" class="form-select">
                                                     <option value="5" selected="selected">Excellent (5)</option>
@@ -441,21 +415,8 @@
                                                     <option value="1">Poor (1)</option>
                                                 </select>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Communication</label>
-                                                <select name="communication" class="form-select">
-                                                    <option value="5" selected="selected">Excellent (5)</option>
-                                                    <option value="4">Very Good (4)</option>
-                                                    <option value="3">Good (3)</option>
-                                                    <option value="2">Fair (2)</option>
-                                                    <option value="1">Poor (1)</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Value for Money</label>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Value</label>
                                                 <select name="value_for_money" class="form-select">
                                                     <option value="5" selected="selected">Excellent (5)</option>
                                                     <option value="4">Very Good (4)</option>
@@ -467,8 +428,19 @@
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="feedback" class="form-label">Your Comments</label>
-                                            <textarea name="feedback" id="feedback" class="form-control" rows="4" placeholder="Share your experience with this service..."></textarea>
+                                            <label class="form-label">Communication</label>
+                                            <select name="communication" class="form-select">
+                                                <option value="5" selected="selected">Excellent (5)</option>
+                                                <option value="4">Very Good (4)</option>
+                                                <option value="3">Good (3)</option>
+                                                <option value="2">Fair (2)</option>
+                                                <option value="1">Poor (1)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Comments (Optional)</label>
+                                            <textarea name="feedback" class="form-control" rows="3" placeholder="Please share your experience..."></textarea>
                                         </div>
                                         
                                         <div class="d-grid">
@@ -515,7 +487,6 @@
         </xpath>
     </template>
     
-
     <!-- Service Request portal templates -->
     <template id="portal_my_service_requests" name="My Service Requests">
         <t t-call="portal.portal_layout">
@@ -579,187 +550,4 @@
             </t>
         </t>
     </template>
-
-    <!-- Portal Submenu -->
-    <template id="portal_my_home_menu" name="Portal layout : Vehicle entries" inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <li t-if="page_name in ['vehicle', 'create_vehicle', 'edit_vehicle']" t-attf-class="breadcrumb-item #{'active ' if vehicle else ''}">
-                <a t-if="vehicle or page_name in ['create_vehicle', 'edit_vehicle']" t-attf-href="/my/vehicles?{{ keep_query() }}">Vehicles</a>
-                <t t-else="">Vehicles</t>
-            </li>
-            <li t-if="vehicle" class="breadcrumb-item active">
-                <a t-if="page_name == 'edit_vehicle'" t-attf-href="/my/vehicle/{{ vehicle.id }}"> <t t-out="vehicle.name" t-if="vehicle.name != '/'"/></a>
-                <t t-else=""> <t t-out="vehicle.name" t-if="vehicle.name != '/'"/></t>
-            </li>
-            <li t-if="page_name == 'edit_vehicle'" class="breadcrumb-item active">
-                <em>Edit Vehicle</em>
-            </li>
-            <li t-if="page_name == 'create_vehicle'" class="breadcrumb-item active">
-                <em>New Vehicle</em>
-            </li>
-            <li t-if="page_name == 'service_request'" t-attf-class="breadcrumb-item #{'active ' if not service_request else ''}">
-                <a t-if="service_request" t-attf-href="/my/service-requests?{{ keep_query() }}">Service Requests</a>
-                <t t-else="">Service Requests</t>
-            </li>
-            <li t-if="service_request" class="breadcrumb-item active">
-                <t t-out="service_request.name" t-if="service_request.name != '/'"/>
-                <t t-else=""><em>New Service Request</em></t>
-            </li>
-            <li t-if="page_name == 'booking'" class="breadcrumb-item active">
-                <em>Book Service</em>
-            </li>
-        </xpath>
-    </template>
-
-    <!-- Service Report Template -->
-    <template id="service_report_template" name="Service Report Template">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="service_request">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row">
-                            <div class="col-12 text-center mb-4">
-                                <h2>Service Report</h2>
-                                <h3 t-esc="service_request.name"/>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <strong>Customer Information:</strong>
-                                <p t-esc="service_request.partner_id.name"/>
-                                <p t-esc="service_request.partner_id.contact_address"/>
-                                <p t-esc="service_request.partner_id.phone"/>
-                                <p t-esc="service_request.partner_id.email"/>
-                            </div>
-                            <div class="col-6 text-end">
-                                <strong>Service Provider:</strong>
-                                <p t-esc="service_request.provider_id.partner_id.name"/>
-                                <p t-esc="service_request.provider_id.partner_id.contact_address"/>
-                                <p t-esc="service_request.provider_id.partner_id.phone"/>
-                                <p t-esc="service_request.provider_id.partner_id.email"/>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <strong>Vehicle Information:</strong>
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td>Vehicle:</td>
-                                        <td t-esc="service_request.vehicle_id.name"/>
-                                    </tr>
-                                    <tr>
-                                        <td>License Plate:</td>
-                                        <td t-esc="service_request.vehicle_id.license_plate"/>
-                                    </tr>
-                                    <tr>
-                                        <td>VIN:</td>
-                                        <td t-esc="service_request.vehicle_id.vin"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Mileage:</td>
-                                        <td t-esc="service_request.vehicle_id.mileage"/>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <strong>Service Details:</strong>
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td>Service Type:</td>
-                                        <td t-esc="service_request.service_id.name"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Scheduled Date:</td>
-                                        <td t-esc="service_request.scheduled_date"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Scheduled End Date:</td>
-                                        <td t-esc="service_request.scheduled_end_date"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Estimated Duration:</td>
-                                        <td t-esc="service_request.estimated_duration"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Completion Date:</td>
-                                        <td t-esc="service_request.completion_date"/>
-                                    </tr>
-                                    <tr>
-                                        <td>Status:</td>
-                                        <td t-esc="service_request.state.replace('_', ' ').title()"/>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <strong>Service Description:</strong>
-                                <p t-esc="service_request.description or 'No description provided.'"/>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <strong>Customer Notes:</strong>
-                                <p t-esc="service_request.customer_notes or 'No notes provided.'"/>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <strong>Service Amount:</strong>
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td>Amount:</td>
-                                        <td t-esc="service_request.amount" t-options='{"widget": "monetary", "display_currency": service_request.currency_id}'/>
-                                    </tr>
-                                    <tr>
-                                        <td>Currency:</td>
-                                        <td t-esc="service_request.currency_id.name"/>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mt-5">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p>Customer Signature:</p>
-                                            <div style="border-bottom: 1px solid #000; margin-top: 50px;"></div>
-                                            <p>Date:</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p>Service Provider Signature:</p>
-                                            <div style="border-bottom: 1px solid #000; margin-top: 50px;"></div>
-                                            <p>Date:</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-            </t>
-        </t>
-    </template>
-
-    <!-- Service Report Action -->
-    <record id="action_service_report" model="ir.actions.report">
-        <field name="name">Service Report</field>
-        <field name="model">auto.voyage.service.request</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">auto_voyage.service_report_template</field>
-        <field name="report_file">auto_voyage.service_report_template</field>
-        <field name="print_report_name">'Service Report - %s' % object.name</field>
-        <field name="binding_model_id" ref="model_auto_voyage_service_request"/>
-        <field name="binding_type">report</field>
-    </record>
-</odoo>
+</odoo> 

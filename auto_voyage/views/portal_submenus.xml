@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vehicles Submenu -->
+    <template id="portal_my_home_menu_vehicles" name="Portal layout : Vehicle entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Vehicle related pages -->
+            <li t-if="page_name == 'vehicles' or page_name == 'vehicle' or page_name == 'create_vehicle' or page_name == 'edit_vehicle'" 
+                t-attf-class="breadcrumb-item #{'active ' if not vehicle and page_name == 'vehicles' else ''}">
+                <a t-if="vehicle or page_name == 'create_vehicle' or page_name == 'edit_vehicle'" 
+                   t-attf-href="/my/vehicles?{{ keep_query() }}">Vehicles</a>
+                <t t-elif="page_name == 'vehicles'">Vehicles</t>
+            </li>
+            <li t-if="vehicle and page_name == 'vehicle'" class="breadcrumb-item active">
+                <t t-esc="vehicle.name"/>
+            </li>
+            <li t-if="vehicle and page_name == 'edit_vehicle'" class="breadcrumb-item">
+                <a t-attf-href="/my/vehicle/#{vehicle.id}?{{ keep_query() }}">
+                    <t t-esc="vehicle.name"/>
+                </a>
+            </li>
+            <li t-if="page_name == 'edit_vehicle'" class="breadcrumb-item active">
+                Edit
+            </li>
+            <li t-if="page_name == 'create_vehicle'" class="breadcrumb-item active">
+                Add New Vehicle
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Service Requests Submenu -->
+    <template id="portal_my_home_menu_service_requests" name="Portal layout : Service Request entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Service related pages -->
+            <li t-if="page_name == 'service_requests' or page_name == 'service_request'" 
+                t-attf-class="breadcrumb-item #{'active ' if not service_request and page_name == 'service_requests' else ''}">
+                <a t-if="service_request" t-attf-href="/my/service-requests?{{ keep_query() }}">Service Requests</a>
+                <t t-elif="page_name == 'service_requests'">Service Requests</t>
+            </li>
+            <li t-if="service_request and page_name == 'service_request'" class="breadcrumb-item active">
+                <t t-esc="service_request.name"/>
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Provider Services Submenu -->
+    <template id="portal_my_home_menu_provider_services" name="Portal layout : Provider Service entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Provider service pages -->
+            <li t-if="page_name == 'provider_services' or page_name == 'provider_service'" 
+                t-attf-class="breadcrumb-item #{'active ' if not service_request and page_name == 'provider_services' else ''}">
+                <a t-if="service_request" t-attf-href="/my/provider-services?{{ keep_query() }}">Provider Services</a>
+                <t t-elif="page_name == 'provider_services'">Provider Services</t>
+            </li>
+            <li t-if="service_request and page_name == 'provider_service'" class="breadcrumb-item active">
+                <t t-esc="service_request.name"/>
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Ratings Submenu -->
+    <template id="portal_my_home_menu_ratings" name="Portal layout : Rating entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'ratings' or page_name == 'rating'" t-attf-class="breadcrumb-item #{'active ' if not rating and page_name == 'ratings' else ''}">
+                <a t-if="rating" t-attf-href="/my/ratings?{{ keep_query() }}">Ratings</a>
+                <t t-elif="page_name == 'ratings'">Ratings</t>
+            </li>
+            <li t-if="rating and page_name == 'rating'" class="breadcrumb-item active">
+                Rating Details
+            </li>
+            
+            <li t-if="page_name == 'rating_edit'" class="breadcrumb-item">
+                <a t-attf-href="/my/ratings?{{ keep_query() }}">Ratings</a>
+            </li>
+            <li t-if="rating and page_name == 'rating_edit'" class="breadcrumb-item">
+                <a t-attf-href="/my/ratings/#{rating.id}?{{ keep_query() }}">
+                    Rating Details
+                </a>
+            </li>
+            <li t-if="page_name == 'rating_edit'" class="breadcrumb-item active">
+                Edit Rating
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Contracts Submenu -->
+    <template id="portal_my_home_menu_contracts" name="Portal layout : Contract entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'contracts' or page_name == 'contract'" t-attf-class="breadcrumb-item #{'active ' if not contract else ''}">
+                <a t-if="contract" t-attf-href="/my/contracts?{{ keep_query() }}">Contracts</a>
+                <t t-else="">Contracts</t>
+            </li>
+            <li t-if="contract" class="breadcrumb-item active">
+                <t t-out="contract.name" t-if="contract.name != '/'"/>
+                <t t-else=""><em>Draft Contract</em></t>
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Discussions Submenu -->
+    <template id="portal_my_home_menu_discussions" name="Portal layout : Discussion entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'discussions' or page_name == 'discussion'" t-attf-class="breadcrumb-item #{'active ' if not discussion else ''}">
+                <a t-if="discussion" t-attf-href="/my/discussions?{{ keep_query() }}">Discussions</a>
+                <t t-else="">Discussions</t>
+            </li>
+            <li t-if="discussion" class="breadcrumb-item active">
+                <t t-out="discussion.name" t-if="discussion.name != '/'"/>
+                <t t-else=""><em>New Discussion</em></t>
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Booking Submenu -->
+    <template id="portal_my_home_menu_booking" name="Portal layout : Booking entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'booking'" class="breadcrumb-item active">
+                Book Service
+            </li>
+        </xpath>
+    </template>
+</odoo> 

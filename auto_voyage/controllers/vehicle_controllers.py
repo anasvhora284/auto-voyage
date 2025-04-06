@@ -92,7 +92,7 @@ class vehicleControllers(CustomerPortal):
         values.update({
             'date': date_begin,
             'vehicles': vehicles,
-            'page_name': 'vehicle',
+            'page_name': 'vehicles',
             'pager': pager,
             'default_url': '/my/vehicles',
             'searchbar_sortings': searchbar_sortings,
@@ -229,8 +229,7 @@ class vehicleControllers(CustomerPortal):
                 request.env.cr.rollback()
                 # Handle specific field errors dynamically
                 if 'duplicate key value violates unique constraint' in str(e):
-                    # Extract the field name from the error message
-                    field_name = str(e).split('Key ')[1].split(' ')[0]  # Extracting the field name from the error message
+                    field_name = str(e).split('Key ')[1].split(' ')[0]
                     field_name = field_name.replace('_', ' ').replace('(', '').replace(')', '').split('=')
                     field_value = field_name[1]
                     field_name = field_name[0]

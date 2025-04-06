@@ -23,7 +23,15 @@
         <field name="name">auto.voyage.service.provider.form</field>
         <field name="model">auto.voyage.service.provider</field>
         <field name="arch" type="xml">
-            <form string="Service Provider">
+            <form>
+                <header>
+                    <button name="action_create_user" string="Create User Account" type="object" 
+                            invisible="user_id" class="oe_highlight"/>
+                    <button name="action_reset_password" string="Reset Password" type="object" 
+                            invisible="not user_id"/>
+                    <button name="action_view_dashboard" string="View Dashboard" type="object" 
+                            invisible="not user_id" class="oe_highlight"/>
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
@@ -32,20 +40,22 @@
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="partner_id" placeholder="Service Provider" />
+                            <field name="partner_id" placeholder="Service Provider" domain="[('is_company', '=', True)]"/>
                         </h1>
                     </div>
                     <group>
                         <group>
                             <field name="code" />
-                            <field name="expertise_level" />
+                            <field name="expertise_level" widget="radio" />
                             <field name="work_schedule" />
                             <field name="available" />
+                            <field name="user_id" readonly="1" />
                         </group>
                         <group>
-                            <field name="rating" widget="percentage" />
-                            <field name="total_services" />
-                            <field name="completion_rate" widget="percentage" />
+                            <field name="rating" widget="priority" readonly="1" />
+                            <field name="total_services" readonly="1" />
+                            <field name="completion_rate" widget="percentage" readonly="1" />
+                            <field name="active" widget="boolean_toggle" />
                         </group>
                     </group>
                     <notebook>
