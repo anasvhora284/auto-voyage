@@ -11,7 +11,9 @@ from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
-class AutoVoyageServicesController(http.Controller):
+class AutoVoyageServicesController(CustomerPortal):
+    _items_per_page = 10
+    
     def _get_frontend_layout_values(self):
         """Helper method to prepare frontend layout values"""
         # Get frontend languages

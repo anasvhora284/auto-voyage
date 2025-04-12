@@ -216,3 +216,30 @@ class ServiceRequest(models.Model):
             domain = [('partner_id', '=', user.partner_id.id)]
         
         return domain
+
+    @api.model
+    def search(self, domain=None, offset=0, limit=None, order=None, count=False):
+        """Override search method to apply access control filtering"""
+        # Apply access domain if not admin or manager
+        user = self.env.user
+        domain = domain or []
+        if not self.env.su and not user.has_group('auto_voyage.group_auto_voyage_manager'):
+            domain_access = self._search_service_requests_by_access()
+            if domain_access:
+                domain = domain_access + domain
+                
+        if count:
+            return super(ServiceRequest, self).search_count(domain)
+        return super(ServiceRequest, self).search(domain, offset=offset, limit=limit, order=order)
+        
+    @api.model
+    def search_count(self, domain):
+        """Override search_count method to apply access control filtering"""
+        # Apply access domain if not admin or manager
+        user = self.env.user
+        if not self.env.su and not user.has_group('auto_voyage.group_auto_voyage_manager'):
+            domain_access = self._search_service_requests_by_access()
+            if domain_access:
+                domain = domain_access + domain
+                
+        return super(ServiceRequest, self).search_count(domain)
